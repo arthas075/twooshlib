@@ -97,7 +97,7 @@ public class HttpClient {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Toast.makeText(c, response,Toast.LENGTH_LONG).show();
+                        //Toast.makeText(c, response,Toast.LENGTH_LONG).show();
 //                        try {
 //                            JSONObject jsonresp = new JSONObject(response);
 //                            if(jsonresp.get("status").equals("success"))
@@ -125,7 +125,13 @@ public class HttpClient {
 //                        } catch (JSONException e) {
 //                            e.printStackTrace();
 //                        }
+                        try {
 
+                            postbacklistener.onResponse(response);
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 },
                 new Response.ErrorListener() {

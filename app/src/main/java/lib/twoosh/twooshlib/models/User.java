@@ -13,6 +13,7 @@ public class User {
     public static String gender = "";
     public static String dob = "";
     public static String location = "";
+    public static String city = "";
     public static String tags = "";
     public static String photo = "";
     public static String corp_referrer = "";

@@ -7,15 +7,22 @@
 
 
 
-    <TextView
+    <!--<TextView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:textSize="23dp"-->
+        <!--android:textColor="#3399ff"-->
+        <!--android:layout_marginTop="20dp"-->
+        <!--android:layout_marginLeft="7dp"-->
+        <!--android:text="Twoosh - You are connected."/>-->
+
+    <ListView
+        android:id="@+id/roomList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="23dp"
-        android:textColor="#3399ff"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="7dp"
-        android:text="Twoosh - You are connected."/>
-
-
+        android:divider="@android:color/transparent"
+        android:dividerHeight="2dp"
+        >
+    </ListView>
 
 </RelativeLayout>
