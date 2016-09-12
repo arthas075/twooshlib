@@ -139,8 +139,8 @@ public class RoomListAdapter extends BaseAdapter {
         TextView tagusers = (TextView)convertView.findViewById(R.id.tagusers);
         TextView tagposts = (TextView)convertView.findViewById(R.id.tagposts);
         RoomListItem tagger = taglist.get(position);
-        Button jointagbtn = (Button)convertView.findViewById(R.id.jointag);
-        jointagbtn.setText("Join");
+//        Button jointagbtn = (Button)convertView.findViewById(R.id.jointag);
+//        jointagbtn.setText("Join");
 
 
 

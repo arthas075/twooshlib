@@ -17,10 +17,12 @@ public class User {
     public static String tags = "";
     public static String photo = "";
     public static String corp_referrer = "";
+
     public static String dynamic_location = "";
 
 
-
+    public static String userid = "";
+    public static String current_room = "";
 
 
     // Company details

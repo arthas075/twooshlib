@@ -77,24 +77,24 @@
                 />
 
 
-            <Button
-                android:layout_height="wrap_content"
-                android:minHeight="40dp"
-                android:id="@+id/jointag"
-                android:layout_width="wrap_content"
-                android:text="Join"
-                android:padding="0dp"
-                android:textSize="10sp"
-                android:onClick="joinThisTag" />
-            <Button
-                android:layout_height="wrap_content"
-                android:minHeight="40dp"
-                android:id="@+id/unjointag"
-                android:layout_width="wrap_content"
-                android:text="Unjoin"
-                android:padding="0dp"
-                android:textSize="10sp"
-                android:onClick="joinThisTag" />
+            <!--<Button-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:minHeight="40dp"-->
+                <!--android:id="@+id/jointag"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:text="Join"-->
+                <!--android:padding="0dp"-->
+                <!--android:textSize="10sp"-->
+                <!--android:onClick="joinThisTag" />-->
+            <!--<Button-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:minHeight="40dp"-->
+                <!--android:id="@+id/unjointag"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:text="Unjoin"-->
+                <!--android:padding="0dp"-->
+                <!--android:textSize="10sp"-->
+                <!--android:onClick="joinThisTag" />-->
 
         </LinearLayout>
 

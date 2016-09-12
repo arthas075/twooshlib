@@ -51,19 +51,22 @@ public class HttpClient {
         this.postbacklistener = postbacklistener;
     }
 
-    public void Get(final Context c, String url, JSONObject params){
+
+
+    public void Get(final Context c, String url, String urlparams){
 
 
         RequestQueue queue = Volley.newRequestQueue(c);
-        //String urlparams = "{\"mode\":\"synctagpost\",\"tagid\":\""+tagid+"\",\"updated\":\""+twooshupdated+"\"}";
-        String urlparams = "";
 
-        try {
-            urlparams = URLEncoder.encode(urlparams, "utf-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
 
+            try {
+                urlparams = URLEncoder.encode(urlparams, "utf-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+
+
+        url = url + "?params="+urlparams;
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {

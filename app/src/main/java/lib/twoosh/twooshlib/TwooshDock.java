@@ -1,35 +1,33 @@
 package lib.twoosh.twooshlib;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
+
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import lib.twoosh.twooshlib.models.User;
 import lib.twoosh.twooshlib.adapters.RoomListAdapter;
 import lib.twoosh.twooshlib.models.RoomListItem;
 import lib.twoosh.twooshlib.networks.HttpClient;
+import lib.twoosh.twooshlib.models.User;
 
 //import io.socket.client.IO.Options;
 //import io.socket.client.IO;
 //import io.socket.client.*;
-
-
 //import com.github.nkzawa.*;
+import com.firebase.client.Firebase;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 
 
-import com.android.volley.Request;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -45,18 +43,52 @@ public class TwooshDock extends AppCompatActivity {
     RoomListAdapter adapter ;
     String userid = "";
    // public Socket socket=null;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_twoosh_dock);
 
 
+        // initialise activity
+        initActivity();
+
         // recognize user
-        recognizeUser();
-           // Toast.makeText(this, User.name,Toast.LENGTH_SHORT).show();
+        attachListeners();
+
+
+        // renderAdpapter
+        renderAdapter();
+
+
+    }
+
+
+    public void initActivity(){
 
         this.getSupportActionBar().setTitle("Twoosh Chat");
         this.getSupportActionBar().setSubtitle("Twoosh - You are connected.");
+
+        recognizeUser();
+        registerSocket();
+
+        Firebase.setAndroidContext(this);
+        Firebase rootRef = new Firebase("https://twooshapp-763a4.firebaseio.com/");
+
+        //getApplicationContext().getSharedPreferences("info.twoosh.TwooshUserPref", 0).edit().clear().commit();
+
+    }
+
+    public void renderAdapter(){
+
+        adapter = new RoomListAdapter();
+        ListView list=(ListView)findViewById(R.id.roomList);
+        list.setAdapter(adapter);
+
+    }
+
+    public void registerSocket(){
 
         try{
 
@@ -69,13 +101,7 @@ public class TwooshDock extends AppCompatActivity {
 
         }
 
-        adapter = new RoomListAdapter();
-        ListView list=(ListView)findViewById(R.id.roomList);
-        list.setAdapter(adapter);
-
     }
-
-
     public void recognizeUser(){
     // recognize user
 
@@ -92,7 +118,7 @@ public class TwooshDock extends AppCompatActivity {
                 registerUser();
             }
             else{
-                Toast.makeText(this, "Found old User...Entering Dock", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "Found old User...Entering Dock", Toast.LENGTH_SHORT).show();
                 renderDock();
 
             }
@@ -129,7 +155,7 @@ public class TwooshDock extends AppCompatActivity {
 
         String name = "Vermas";
         String mobile = "23453r34r";
-        String email = "a@s.com";
+        String email = "a@asdasds.com";
         String gender = "cece";
         String dob = "cewcec";
         String location = "cwecewc";
@@ -182,20 +208,34 @@ public class TwooshDock extends AppCompatActivity {
         } else
         {
             Toast.makeText(this, "twoosher : "+twoosher, Toast.LENGTH_SHORT).show();
-            try {
-
-                JSONObject user_data = new JSONObject(twoosher);
-                userid = (String)user_data.get("id");
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            setUserStatics(twoosher);
             return false;
 
         }
 
 
     }
+
+    public void setUserStatics(String twoosher){
+        try {
+
+
+            JSONObject user_data = new JSONObject(twoosher);
+            userid = (String)user_data.get("id");
+            String username = (String)user_data.get("name");
+            User.userid = userid;
+            User.name =  username;
+            User.corp_referrer = (String)user_data.get("corp_ref");
+            User.corp_auth_token = (String)user_data.get("corp_auth");
+
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
 
     public void registerUser(){
 
@@ -206,7 +246,7 @@ public class TwooshDock extends AppCompatActivity {
             public void onResponse(String response) {
                 // Do Something after the request callback comes has finished
 
-                Toast.makeText(TwooshDock.this,"POST RESPONSE : "+response,Toast.LENGTH_SHORT).show();
+                //Toast.makeText(TwooshDock.this,"POST RESPONSE : "+response,Toast.LENGTH_SHORT).show();
 
                 // parse register user post response
                 try {
@@ -214,21 +254,25 @@ public class TwooshDock extends AppCompatActivity {
                     JSONObject register_resp = new JSONObject(response);
                     JSONObject response_data = register_resp.getJSONObject("response");
                     int inserted = response_data.getInt("inserted");
-                    Toast.makeText(TwooshDock.this, "Inserted : "+inserted, Toast.LENGTH_SHORT).show();
-                    if((register_resp.get("status").equals("Success")) && (inserted == 1)){
+                    int matched = response_data.getInt("matched");
+                    //Toast.makeText(TwooshDock.this, "Inserted : "+inserted+", Matched : "+matched, Toast.LENGTH_SHORT).show();
+                    if((register_resp.get("status").equals("Success")) && ((inserted == 1) || (matched == 1))){
 
                         // store user details to Shared Prefs
-                        userid = (String)response_data.get("id");
+
                         SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(
                                 "info.twoosh.TwooshUserPref", Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPref.edit();
                         String twoosh_user_data = response_data.toString();
                         editor.putString("twoosher",twoosh_user_data);
                         editor.commit();
+
+                        setUserStatics(twoosh_user_data);
                         renderDock();
 
 
                     }else{
+
                         Toast.makeText(TwooshDock.this, "In else part", Toast.LENGTH_SHORT).show();
                     }
 
@@ -252,7 +296,8 @@ public class TwooshDock extends AppCompatActivity {
             }
         });
 
-        httpclient.Post(this, "http://192.168.0.113:8001/registerUser", userdetails);
+        String register_url = getResources().getString(R.string.local_host)+"registeruser";
+        httpclient.Post(this, register_url, userdetails);
 
 //        task.execute();
 
@@ -261,7 +306,7 @@ public class TwooshDock extends AppCompatActivity {
 
     public void renderDock(){
 
-        Toast.makeText(TwooshDock.this,"Rendering Dock for userid "+userid,Toast.LENGTH_SHORT).show();
+        Toast.makeText(TwooshDock.this,"Rendering Dock for username "+User.name,Toast.LENGTH_SHORT).show();
         getRoomList();
 
     }
@@ -275,18 +320,21 @@ public class TwooshDock extends AppCompatActivity {
 
                 try {
 
+                    //Toast.makeText(TwooshDock.this, response, Toast.LENGTH_SHORT).show();
                     JSONObject roomlist_response = new JSONObject(response);
                     JSONArray roomlist = roomlist_response.getJSONArray("response");
                     addtoAdapter(roomlist);
 
 
                 } catch (JSONException e) {
+                    Toast.makeText(TwooshDock.this, e.toString(), Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
                 }
             }
         });
 
-        httpClient.Get(this, "http://192.168.0.113:8001/getRooms/" + userid, userdetails);
+        String getroomurl = getResources().getString(R.string.local_host)+"getrooms";
+        httpClient.Get(this, getroomurl, "");
 
     }
 
@@ -299,7 +347,7 @@ public class TwooshDock extends AppCompatActivity {
             try {
 
                 room = new JSONObject(roomlist.get(i).toString());
-                String roomname = room.getString("name");
+                String roomname = room.getString("mapname");
                 String roomstrength = room.getString("users_count");
                 String roomposts = "0";
 
@@ -312,6 +360,31 @@ public class TwooshDock extends AppCompatActivity {
 
         }
         adapter.notifyDataSetChanged();
+    }
+
+    public void attachListeners(){
+
+
+
+        ListView list=(ListView) findViewById(R.id.roomList);
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                RoomListItem m = (RoomListItem) parent.getAdapter().getItem(position);
+                //TagListItem m = (TagListItem)view.getTag(R.id.tagList);
+                //Toast.makeText(TwooshDock.this, m.tagdesc, Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(TwooshDock.this, RoomDock.class);
+                // intent.putExtra("tagtitle",m.tagname);
+                intent.putExtra("tagid", m.hashid);
+                intent.putExtra("tagname", m.tagname);
+                startActivity(intent);
+            }
+
+
+        });
+
+
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="center"
+    android:id="@+id/create_new_post_wrap"
+
+    >
+
+
+
+        <ImageView
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:src="@drawable/curiosity_plain"
+            android:layout_gravity="center"
+            android:scaleType="centerInside"
+            android:layout_marginTop="-50dp"
+            android:id="@+id/askaq"/>
+
+
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ask a Question"
+            android:id="@+id/askqbtn"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:textColor="#fff"
+            android:padding="5dp"
+            android:scaleType="centerInside"
+            android:background="#ffa500"/>
+
+        <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="10dp"
+        android:textColor="#d00"
+        android:id="@+id/online_count"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="40dp"
+        android:text="People Targeted : 2"/>
+
+
+        <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="10dp"
+        android:textColor="#333"
+        android:gravity="center_horizontal"
+        android:text="Its a Live Information Network."/>
+
+
+
+
+    <!--<scale xmlns:android="http://schemas.android.com/apk/res/android"-->
+        <!--android:duration="1000"-->
+        <!--android:fromXScale="1"-->
+        <!--android:fromYScale="1"-->
+        <!--android:pivotX="50%"-->
+        <!--android:pivotY="50%"-->
+        <!--android:repeatCount="1"-->
+        <!--android:repeatMode="reverse"-->
+        <!--android:toXScale="0.5"-->
+        <!--android:toYScale="0.5" />-->
+
+
+    <!--<LinearLayout-->
+        <!--android:layout_weight="1"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:orientation="vertical"-->
+        <!--android:background="#fff">-->
+
+
+
+        <!--<TextView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:textSize="12dp"-->
+            <!--android:textColor="#4285F4"-->
+            <!--android:layout_marginTop="20dp"-->
+            <!--android:layout_marginLeft="7dp"-->
+            <!--android:text="Start a live conversation in this group..."/>-->
+
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:padding="7dp">-->
+
+            <!--<EditText-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="80dp"-->
+                <!--android:layout_marginLeft="1dp"-->
+                <!--android:background="@drawable/et_border"-->
+                <!--android:textCursorDrawable="@null"-->
+                <!--android:padding="5dp"-->
+                <!--android:id="@+id/twoosh_edittext"-->
+                <!--android:hint="Ask a question, start a live discussion..."/>-->
+
+        <!--</LinearLayout>-->
+
+
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:gravity="center"-->
+            <!--android:orientation="vertical">-->
+
+
+            <!--<Button-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="Twoosh"-->
+                <!--android:layout_marginTop="50dp"-->
+                <!--android:textColor="#fff"-->
+                <!--android:background="#99cc00"-->
+                <!--android:id="@+id/twoosh_btn"/>-->
+
+
+
+        <!--</LinearLayout>-->
+
+
+        <!--&lt;!&ndash;<ImageView&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:src="@drawable/app_icon_128"/>&ndash;&gt;-->
+
+        <!--<TextView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:textSize="10dp"-->
+            <!--android:textColor="#f00"-->
+            <!--android:id="@+id/online_count"-->
+            <!--android:gravity="center_horizontal"-->
+            <!--android:layout_marginTop="80dp"-->
+            <!--android:text="People Targeted : 2"/>-->
+
+
+        <!--<TextView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:textSize="10dp"-->
+            <!--android:textColor="#000"-->
+            <!--android:gravity="center_horizontal"-->
+            <!--android:text="Its a Live Information Network."/>-->
+
+
+    <!--</LinearLayout>-->
+</LinearLayout>

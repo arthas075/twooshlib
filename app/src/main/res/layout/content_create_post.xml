@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="lib.twoosh.twooshlib.CreatePost">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        >
+
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:background="#fff">
+
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="23dp"
+                android:textColor="@color/twooshblue"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="7dp"
+                android:text="Start a live conversation..."/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="7dp">
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:layout_marginLeft="1dp"
+                    android:background="@drawable/et_border"
+                    android:textCursorDrawable="@null"
+                    android:padding="5dp"
+                    android:id="@+id/twoosh_edittext"
+                    android:hint="Ask a question, start a live discussion..."/>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical">
+
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Twoosh"
+                    android:layout_marginTop="50dp"
+                    android:textColor="#fff"
+                    android:background="#99cc00"
+                    android:id="@+id/twoosh_btn"/>
+
+
+                <!--<Button-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="ChatLib"-->
+                <!--android:layout_marginTop="50dp"-->
+                <!--android:textColor="#fff"-->
+                <!--android:background="#99cc00"-->
+                <!--android:id="@+id/chat_btn"/>-->
+
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Register"
+                    android:layout_marginTop="50dp"
+                    android:textColor="#fff"
+                    android:background="#99cc00"
+                    android:id="@+id/register_btn"/>
+
+            </LinearLayout>
+
+
+            <!--<ImageView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:src="@drawable/app_icon_128"/>-->
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="20dp"
+                android:textColor="#f00"
+                android:id="@+id/online_count"
+                android:gravity="center_horizontal"
+                android:layout_marginTop="80dp"
+                android:text="People Online : 100"/>
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="20dp"
+                android:textColor="#000"
+                android:gravity="center_horizontal"
+                android:text="Its a Live Information Network."/>
+
+
+        </LinearLayout>
+
+
+
+        <!--<LinearLayout-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:background="#fff"-->
+        <!-->-->
+
+        <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:orientation="horizontal">-->
+
+
+        <!--<EditText-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_weight="1"-->
+        <!--android:padding="1dp"-->
+        <!--android:background="@drawable/et_border"-->
+        <!--android:textStyle="normal"-->
+        <!--android:textColor="#000"-->
+        <!--android:textCursorDrawable="@null"-->
+        <!--android:hint="Enter your name..."/>-->
+
+        <!--<Button-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="Send"-->
+        <!--android:textColor="#fff"-->
+        <!--android:background="#99cc00"/>-->
+        <!--</LinearLayout>-->
+
+
+
+        <!--</LinearLayout>-->
+
+    </LinearLayout>
+
+
+</RelativeLayout>
