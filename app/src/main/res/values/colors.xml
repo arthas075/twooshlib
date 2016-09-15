@@ -6,6 +6,7 @@
 
 
     <color name="colorPrimary">#77AA00</color>
+    <color name="twoosh_green">#77AA00</color>
     <color name="colorPrimaryDark">#77AA00</color>
     <color name="colorAccent">#4285F4</color>
     <color name="twooshblue">#4285F4</color>

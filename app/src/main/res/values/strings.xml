@@ -8,6 +8,9 @@
 
     <string name="local_host">http://192.168.0.101:8001/</string>
     <string name="remote_host">http://twoosh.info:8001/</string>
+
+    <string name="local_host_socket">http://192.168.0.101:8000</string>
+    <string name="remote_host_socket">http://twoosh.info:8000</string>
     <string name="title_activity_create_post">CreatePost</string>
     <string name="title_activity_chatbox">Chatbox</string>
     <string name="title_activity_scrolling">ScrollingActivity</string>
@@ -100,5 +103,6 @@
         "For example, position the FAB to one side of stream of a cards so the FAB won’t interfere "
         "when a user tries to pick up one of cards.\n\n"
     </string>
+    <string name="title_activity_scroll_test">ScrollTestActivity</string>
 
 </resources>

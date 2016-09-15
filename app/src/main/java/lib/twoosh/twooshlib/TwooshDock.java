@@ -18,6 +18,7 @@ import lib.twoosh.twooshlib.adapters.RoomListAdapter;
 import lib.twoosh.twooshlib.models.RoomListItem;
 import lib.twoosh.twooshlib.networks.HttpClient;
 import lib.twoosh.twooshlib.models.User;
+import lib.twoosh.twooshlib.services.SocketService;
 
 //import io.socket.client.IO.Options;
 //import io.socket.client.IO;
@@ -90,16 +91,10 @@ public class TwooshDock extends AppCompatActivity {
 
     public void registerSocket(){
 
-        try{
+        SocketService ss = new SocketService();
+        ss.connectSocket();
+        Socket socketobj = ss.getSocketInstance();
 
-            socket = IO.socket("http://twoosh.info:8000");
-            socket.connect();
-
-
-        }
-        catch (Exception e){
-
-        }
 
     }
     public void recognizeUser(){
