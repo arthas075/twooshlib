@@ -139,6 +139,7 @@ public class PostListAdapter extends BaseAdapter {
         twooshuserid.setText(postObj.user_name);
         distinct_users.setText(postObj.users_count);
         chatreplies.setText(postObj.replies_count);
+        postTime.setText(postObj.twoosh_time);
         //postTime.setText(postObj.getGMTDateString());
         postOnline.setText("Online : "+postObj.online_count);
         return row;

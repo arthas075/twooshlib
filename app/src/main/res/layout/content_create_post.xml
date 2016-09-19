@@ -27,7 +27,7 @@
                 android:textColor="@color/twooshblue"
                 android:layout_marginTop="20dp"
                 android:layout_marginLeft="7dp"
-                android:text="Start a live conversation..."/>
+                android:text="Start a live chat..."/>
 
             <LinearLayout
                 android:layout_width="match_parent"

@@ -1,5 +1,6 @@
 package lib.twoosh.twooshlib;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -9,10 +10,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import lib.twoosh.twooshlib.adapters.ChatListAdapter;
 import lib.twoosh.twooshlib.models.ChatListItem;
@@ -42,6 +48,35 @@ public class Chatbox extends AppCompatActivity {
 
     public void initActivity(){
         getSupportActionBar().setTitle("Twoosh Chatbox");
+
+        Intent i = getIntent();
+//        intent.putExtra("twoosh_text",m.twoosh_text);
+//        intent.putExtra("twoosh_id", m.twoosh_id);
+//        intent.putExtra("username", m.user_name);
+//        intent.putExtra("user_id", m.user_id);
+
+        String twooshtext = i.getStringExtra("twoosh_text");
+        String twooshid = i.getStringExtra("twoosh_id");
+        String username = i.getStringExtra("username");
+        String userid = i.getStringExtra("user_id");
+        String replies = i.getStringExtra("replies");
+        String following = i.getStringExtra("following");
+        String twoosh_time = i.getStringExtra("twoosh_time");
+
+        TextView chathead_twooshtext = (TextView)findViewById(R.id.chathead_twooshtext);
+        TextView chathead_username = (TextView)findViewById(R.id.chathead_username);
+        TextView chathead_replies = (TextView)findViewById(R.id.chathead_replies);
+        TextView chathead_following = (TextView)findViewById(R.id.chathead_following);
+        TextView chathead_twooshtime = (TextView)findViewById(R.id.chathead_postTime);
+
+
+        chathead_twooshtext.setText(twooshtext);
+        chathead_username.setText(username);
+        chathead_replies.setText("Replies : "+replies);
+        chathead_following.setText("Following : "+following);
+        chathead_twooshtime.setText(twoosh_time);
+
+
 
         chatRecyclerView = (RecyclerView) findViewById(R.id.chats_recycler_view);
         chatRecyclerView.setNestedScrollingEnabled(false);
@@ -136,5 +171,27 @@ public class Chatbox extends AppCompatActivity {
 
 
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_twoosh_dock, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

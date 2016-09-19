@@ -13,7 +13,7 @@
 
     <TextView
         android:layout_width="match_parent"
-        android:id="@+id/twoosh1"
+        android:id="@+id/chathead_twooshtext"
         android:layout_height="wrap_content"
         android:textColor="#4285F4"
         android:textSize="19dp"
@@ -28,55 +28,56 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/userid1"
+            android:id="@+id/chathead_username"
             android:text="Anonymous"
             android:textSize="9dp"
             android:textColor="#505050"
             android:layout_alignParentLeft="true"/>
 
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/distinctusers"
-            android:text="Users : 0"
-            android:textSize="9dp"
-            android:layout_marginLeft="5dp"
-            android:layout_toRightOf="@id/userid1"
-            android:textColor="#505050"/>
-
-
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/chatreplies"
+            android:id="@+id/chathead_replies"
             android:text="Replies : 0"
             android:textSize="9dp"
             android:layout_marginLeft="5dp"
-            android:layout_toRightOf="@id/distinctusers"
+            android:layout_toRightOf="@id/chathead_username"
             android:textColor="#505050"/>
-
-
-
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/postOnline1"
+            android:id="@+id/chathead_following"
+            android:text="Following : 0"
+            android:textSize="9dp"
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@id/chathead_replies"
+            android:textColor="#505050"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/chathead_onlinecount"
             android:text="Online : 0"
             android:textSize="9dp"
             android:layout_marginLeft="5dp"
-            android:layout_toRightOf="@id/chatreplies"
+            android:visibility="gone"
+            android:layout_toRightOf="@id/chathead_following"
             android:textColor="#ff0000"/>
+
+
+
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/postTime"
+            android:id="@+id/chathead_postTime"
             android:text="00 : 00 GMT"
             android:textSize="9dp"
             android:layout_marginLeft="5dp"
-            android:textColor="#606060"
+            android:textColor="#c0c0c0"
             android:layout_alignParentRight="true"/>
     </RelativeLayout>
 

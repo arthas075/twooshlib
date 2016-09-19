@@ -24,7 +24,12 @@ import lib.twoosh.twooshlib.services.SocketService;
 //import io.socket.client.IO;
 //import io.socket.client.*;
 //import com.github.nkzawa.*;
+import com.firebase.client.AuthData;
+import com.firebase.client.ChildEventListener;
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 
@@ -43,6 +48,9 @@ public class TwooshDock extends AppCompatActivity {
     JSONObject userdetails ;
     RoomListAdapter adapter ;
     String userid = "";
+    String twoosher = "";
+    public static Firebase fbaserootref;
+    public static Firebase wordlistref;
    // public Socket socket=null;
 
 
@@ -72,10 +80,12 @@ public class TwooshDock extends AppCompatActivity {
         this.getSupportActionBar().setSubtitle("Twoosh - You are connected.");
 
         recognizeUser();
+
+
         registerSocket();
 
-        Firebase.setAndroidContext(this);
-        Firebase rootRef = new Firebase("https://twooshapp-763a4.firebaseio.com/");
+
+
 
         //getApplicationContext().getSharedPreferences("info.twoosh.TwooshUserPref", 0).edit().clear().commit();
 
@@ -109,11 +119,12 @@ public class TwooshDock extends AppCompatActivity {
             boolean newuser = IfNewUser();
             if(newuser){
 
-                Toast.makeText(this, "New User...Registering", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "New User...Registering", Toast.LENGTH_SHORT).show();
                 registerUser();
             }
             else{
                 //Toast.makeText(this, "Found old User...Entering Dock", Toast.LENGTH_SHORT).show();
+                setUserStatics();
                 renderDock();
 
             }
@@ -148,20 +159,33 @@ public class TwooshDock extends AppCompatActivity {
 //        String corp_auth_token = User.corp_auth_token;
 
 
-        String name = "Vermas";
-        String mobile = "23453r34r";
-        String email = "a@asdasds.com";
-        String gender = "cece";
-        String dob = "cewcec";
-        String location = "cwecewc";
-        String city = "Sydney";
-        String tags = "physics";
-        String corp_referrer = "1";
-        String corp_auth_token = "1";
+       String name = "Satyam";
+       String mobile = "9945325885";
+       String email = "satyam.nitt@gmail.com";
+       String gender = "M";
+       String dob = "25091990";
+       String location = "bangalore";
+       String city = "bangalore";
+       String tags = "neurology";
+       String corp_referrer = "1";
+       String corp_auth_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb3JwaWQiOiI1N2RjZjE5NTI1ZWNlNjYxMDVkNmFiMTUiLCJlbWFpbCI6InNhamlkLmlzbGFtOTBAZ21haWwuY29tIiwiZXhwIjoxNDg5NjUwNjk2LCJtb2JpbGUiOiI3MzkwODk0MTExIn0.QvWtS1G4o5PSW1gKJVXcDYzA-gyPPT7g4ISRTRsVpQk";
 
-        if(name == "" || mobile=="" || email == "" || gender == "" || dob == "" || location == "" || corp_referrer == "" || corp_auth_token == "" ){
+       User.name = name;
+       User.mobile = mobile;
+       User.email = email;
+       User.gender = gender;
+       User.dob = dob;
+       User.location = location;
+       User.tags = tags;
+       User.corp_referrer = corp_referrer;
+       User.corp_auth_token = corp_auth_token;
+       User.city = city;
 
-            Toast.makeText(this, "Invalid user details...", Toast.LENGTH_SHORT).show();
+
+
+        if(User.name == "" || User.mobile=="" || User.email == "" || User.gender == "" || User.dob == "" || User.location == "" || User.corp_referrer == "" || User.corp_auth_token == "" ){
+
+            //Toast.makeText(this, "Invalid user details...", Toast.LENGTH_SHORT).show();
             return false;
 
         }
@@ -198,12 +222,12 @@ public class TwooshDock extends AppCompatActivity {
         //
         String twoosher = prefs.getString("twoosher", null);
         if(twoosher==null){
-            Toast.makeText(this, "twoosher null...", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "twoosher null...", Toast.LENGTH_SHORT).show();
             return true;
         } else
         {
-            Toast.makeText(this, "twoosher : "+twoosher, Toast.LENGTH_SHORT).show();
-            setUserStatics(twoosher);
+            //Toast.makeText(this, "twoosher recognized : "+twoosher, Toast.LENGTH_SHORT).show();
+            this.twoosher = twoosher;
             return false;
 
         }
@@ -211,37 +235,162 @@ public class TwooshDock extends AppCompatActivity {
 
     }
 
-    public void setUserStatics(String twoosher){
+    public void setUserStatics(){
         try {
 
 
             JSONObject user_data = new JSONObject(twoosher);
-            userid = (String)user_data.get("id");
-            String username = (String)user_data.get("name");
-            User.userid = userid;
-            User.name =  username;
-            User.corp_referrer = (String)user_data.get("corp_ref");
-            User.corp_auth_token = (String)user_data.get("corp_auth");
+            User.userid = (String)user_data.get("id");
+            User.access_token = (String)user_data.get("access_token");
+            User.appname = (String)user_data.get("corp_appname");
+            User.corpid = (String)user_data.get("corp_id");
 
+//            String username = (String)user_data.get("name");
+//            User.userid = userid;
+//            User.name =  username;
+//            User.corp_referrer = (String)user_data.get("corp_ref");
+//            User.corp_auth_token = (String)user_data.get("corp_auth");
 
+           // Toast.makeText(this, "userid - "+User.userid, Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "access token - "+User.access_token, Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "appname - "+User.appname, Toast.LENGTH_SHORT).show();
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
+        setFirebase();
+
     }
 
+    public void setFirebase(){
+
+
+//        Firebase wordlistold = null;
+        Firebase.setAndroidContext(getApplicationContext());
+        Firebase.getDefaultConfig().setPersistenceEnabled(true);
+        fbaserootref = new Firebase("https://twooshapp-763a4.firebaseio.com");
+
+        wordlistref = fbaserootref.child(User.corpid).child("wordlist");
+        wordlistref.keepSynced(true);
+
+
+        wordlistref.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot snapshot, String previousChild) {
+                System.out.println("The " + snapshot.getKey() + " dinosaur's score is " + snapshot.getValue());
+                RoomListItem room_local = snapshot.getValue(RoomListItem.class);
+                Toast.makeText(getApplicationContext(), "Total local objects - " + snapshot.getChildrenCount(), Toast.LENGTH_SHORT).show();
+                adapter.add(room_local);
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
+//
+//        wordlistref.addListenerForSingleValueEvent(new ValueEventListener() {
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                System.out.println("We're done loading the initial " + dataSnapshot.getChildrenCount() + " items");
+//                adapter.notifyDataSetChanged();
+//                Toast.makeText(getApplicationContext(), "Add data change called ", Toast.LENGTH_SHORT).show();
+//            }
+//
+//            public void onCancelled(FirebaseError firebaseError) {
+//            }
+//        });
+
+        wordlistref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                System.out.println(snapshot.getValue());
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                System.out.println("The read failed: " + firebaseError.getMessage());
+            }
+        });
+
+
+        //adapter.notifyDataSetInvalidated();
+        // Attach an listener to read the data at our posts reference
+//        wordlistref.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot snapshot) {
+//                System.out.println("There are " + snapshot.getChildrenCount() + " blog posts");
+//                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+//                    RoomListItem roomoff = postSnapshot.getValue(RoomListItem.class);
+//                    //System.out.println(post.getAuthor() + " - " + post.getTitle());
+//                   // Toast.makeText(getApplicationContext(), "Room - "+roomoff.tagname, Toast.LENGTH_SHORT).show();
+//                    adapter.add(roomoff);
+//                }
+//                adapter.notifyDataSetChanged();
+//            }
+//
+//            @Override
+//            public void onCancelled(FirebaseError firebaseError) {
+//                System.out.println("The read failed: " + firebaseError.getMessage());
+//            }
+//        });
+
+//        fbaserootref.addAuthStateListener(new Firebase.AuthStateListener() {
+//            @Override
+//            public void onAuthStateChanged(AuthData authData) {
+//                if (authData != null) {
+//                    // user is logged in
+//                } else {
+//                    // user is not logged in
+//                }
+//            }
+//        });
+//
+
+
+        // Create a handler to handle the result of the authentication
+//        Firebase.AuthResultHandler authResultHandler = new Firebase.AuthResultHandler() {
+//            @Override
+//            public void onAuthenticated(AuthData authData) {
+//                // Authenticated successfully with payload authData
+//                Toast.makeText(TwooshDock.this, "Firebase auth success", Toast.LENGTH_SHORT).show();
+//            }
+//            @Override
+//            public void onAuthenticationError(FirebaseError firebaseError) {
+//                // Authenticated failed with error firebaseError
+//                Toast.makeText(TwooshDock.this, "Firebase auth error", Toast.LENGTH_SHORT).show();
+//            }
+//        };
+        //fbaserootref.authAnonymously(authResultHandler);
+
+    }
 
     public void registerUser(){
 
             //HttpClient httpclient = new HttpClient();
-
+        //Toast.makeText(TwooshDock.this,"Registering User...",Toast.LENGTH_SHORT).show();
         HttpClient httpclient = new HttpClient(new HttpClient.PostBack() {
             @Override
             public void onResponse(String response) {
                 // Do Something after the request callback comes has finished
 
-                //Toast.makeText(TwooshDock.this,"POST RESPONSE : "+response,Toast.LENGTH_SHORT).show();
+               // Toast.makeText(TwooshDock.this,"POST RESPONSE : "+response,Toast.LENGTH_SHORT).show();
 
                 // parse register user post response
                 try {
@@ -250,25 +399,25 @@ public class TwooshDock extends AppCompatActivity {
                     JSONObject response_data = register_resp.getJSONObject("response");
                     int inserted = response_data.getInt("inserted");
                     int matched = response_data.getInt("matched");
-                    //Toast.makeText(TwooshDock.this, "Inserted : "+inserted+", Matched : "+matched, Toast.LENGTH_SHORT).show();
-                    if((register_resp.get("status").equals("Success")) && ((inserted == 1) || (matched == 1))){
+
+                    if( register_resp.get("status").equals("Success")) {
 
                         // store user details to Shared Prefs
-
+                       // Toast.makeText(TwooshDock.this, "Inside api success", Toast.LENGTH_SHORT).show();
                         SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(
                                 "info.twoosh.TwooshUserPref", Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPref.edit();
                         String twoosh_user_data = response_data.toString();
                         editor.putString("twoosher",twoosh_user_data);
                         editor.commit();
-
-                        setUserStatics(twoosh_user_data);
+                        twoosher = twoosh_user_data;
+                        setUserStatics();
                         renderDock();
 
 
                     }else{
 
-                        Toast.makeText(TwooshDock.this, "In else part", Toast.LENGTH_SHORT).show();
+                       // Toast.makeText(TwooshDock.this, "API resp status failure ", Toast.LENGTH_SHORT).show();
                     }
 
 //                    JSONObject syncdata = userresp.getJSONObject("data");
@@ -285,14 +434,36 @@ public class TwooshDock extends AppCompatActivity {
 
 
                 } catch (JSONException e) {
-                    Toast.makeText(TwooshDock.this, e.toString(), Toast.LENGTH_SHORT).show();
+                   // Toast.makeText(TwooshDock.this, e.toString(), Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
                 }
             }
         });
 
-        String register_url = getResources().getString(R.string.local_host)+"registeruser";
-        httpclient.Post(this, register_url, userdetails);
+        String host = getResources().getString(R.string.local_host);
+        String proauthapi = getResources().getString(R.string.proauthapi);
+        String proauth_url = host+proauthapi;
+        JSONObject proauthdata = new JSONObject();
+        //{"name":"Satyam","mobile":"9945325886","email":"satyam.nitt@gmail.com","gender":"","dob":"","location":"","tags":"dermatologist,orthopaedics","corp_referrer":"1","corp_auth_token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb3JwaWQiOiI1N2RjZjE5NTI1ZWNlNjYxMDVkNmFiMTUiLCJlbWFpbCI6InNhamlkLmlzbGFtOTBAZ21haWwuY29tIiwiZXhwIjoxNDg5NjUwNjk2LCJtb2JpbGUiOiI3MzkwODk0MTExIn0.QvWtS1G4o5PSW1gKJVXcDYzA-gyPPT7g4ISRTRsVpQk","city":"Bangalore"}
+
+        try{
+
+
+            proauthdata.put("name",User.name);
+            proauthdata.put("mobile",User.mobile);
+            proauthdata.put("email",User.email);
+            proauthdata.put("gender",User.gender);
+            proauthdata.put("dob",User.dob);
+            proauthdata.put("location",User.location);
+            proauthdata.put("tags",User.tags);
+            proauthdata.put("corp_referrer",User.corp_referrer);
+            proauthdata.put("corp_auth_token", User.corp_auth_token);
+            proauthdata.put("city",User.city);
+
+
+        }
+        catch (Exception e){}
+        httpclient.Post(this, proauth_url, proauthdata);
 
 //        task.execute();
 
@@ -301,13 +472,16 @@ public class TwooshDock extends AppCompatActivity {
 
     public void renderDock(){
 
-        Toast.makeText(TwooshDock.this,"Rendering Dock for username "+User.name,Toast.LENGTH_SHORT).show();
+        this.getSupportActionBar().setTitle(User.appname+" Chat");
+
+
         getRoomList();
 
     }
 
     public void getRoomList(){
 
+        //Toast.makeText(TwooshDock.this,"Getting rooms list..."+User.name,Toast.LENGTH_SHORT).show();
         HttpClient httpClient = new HttpClient(new HttpClient.GetBack(){
 
             @Override
@@ -322,20 +496,24 @@ public class TwooshDock extends AppCompatActivity {
 
 
                 } catch (JSONException e) {
-                    Toast.makeText(TwooshDock.this, e.toString(), Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(TwooshDock.this, e.toString(), Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
                 }
             }
         });
 
-        String getroomurl = getResources().getString(R.string.local_host)+"getrooms";
-        httpClient.Get(this, getroomurl, "");
+        String host = getResources().getString(R.string.local_host);
+        String getroomsapi = getResources().getString(R.string.getroomsapi);
+        String getroomsurl = host+getroomsapi;
+        String urlparams = "{\"corpid\":\""+User.corpid+"\"}";
+        httpClient.Get(this, getroomsurl, urlparams);
 
     }
 
-
+    // add room objects to adapter and local firebase
     public void addtoAdapter(JSONArray roomlist){
 
+        wordlistref = fbaserootref.child(User.corpid).child("wordlist");
         JSONObject room = null;
         RoomListItem roomitem;
         for(int i=0;i<roomlist.length();i++){
@@ -347,14 +525,16 @@ public class TwooshDock extends AppCompatActivity {
                 String roomposts = "0";
 
                 roomitem = new RoomListItem(roomname,roomname,roomstrength, roomposts);
-                adapter.add(roomitem);
+                //wordlistref.push().setValue(roomitem);
+                wordlistref.child(roomname).setValue(roomitem);
+                //adapter.add(roomitem);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
 
         }
-        adapter.notifyDataSetChanged();
+       // adapter.notifyDataSetChanged();
     }
 
     public void attachListeners(){
@@ -373,6 +553,7 @@ public class TwooshDock extends AppCompatActivity {
                 // intent.putExtra("tagtitle",m.tagname);
                 intent.putExtra("tagid", m.hashid);
                 intent.putExtra("tagname", m.tagname);
+                User.current_room = m.hashid;
                 startActivity(intent);
             }
 

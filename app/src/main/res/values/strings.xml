@@ -6,11 +6,18 @@
     <string name="title_activity_test">TestActivity</string>
 
 
-    <string name="local_host">http://192.168.0.101:8001/</string>
-    <string name="remote_host">http://twoosh.info:8001/</string>
+    <string name="local_host">http://192.168.0.106:8001</string>
+    <string name="remote_host">http://twoosh.info:8001</string>
 
-    <string name="local_host_socket">http://192.168.0.101:8000</string>
+    <string name="local_host_socket">http://192.168.0.106:8000</string>
     <string name="remote_host_socket">http://twoosh.info:8000</string>
+
+
+    <string name="proauthapi">/proauth</string>
+    <string name="getroomsapi">/getrooms</string>
+    <string name="getpostsapi">/getposts</string>
+    <string name="getpeopleapi">/getpeople</string>
+    <string name="createpostapi">/publishtwoosh</string>
     <string name="title_activity_create_post">CreatePost</string>
     <string name="title_activity_chatbox">Chatbox</string>
     <string name="title_activity_scrolling">ScrollingActivity</string>
@@ -104,5 +111,6 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="title_activity_scroll_test">ScrollTestActivity</string>
+    <string name="title_activity_people_chat">PeopleChat</string>
 
 </resources>

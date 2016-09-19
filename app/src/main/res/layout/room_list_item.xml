@@ -51,6 +51,7 @@
                 android:layout_marginLeft="23dp"
                 android:layout_marginTop="10dp"
                 android:textSize="11sp"
+                android:visibility="gone"
                 android:textColor="#707070"
                 />
 

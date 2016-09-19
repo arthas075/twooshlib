@@ -16,16 +16,21 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".TwooshDock">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+
+
         <activity
             android:name=".RoomDock"
-            android:label="@string/title_activity_room_dock"
-            android:theme="@style/AppTheme" />
+            android:label="@string/title_activity_room_dock"/>
+
+
+
         <activity
             android:name=".CreatePost"
             android:label="@string/title_activity_create_post"
@@ -34,13 +39,14 @@
             android:name=".Chatbox"
             android:label="@string/title_activity_chatbox"
             android:theme="@style/AppTheme"
-            android:windowSoftInputMode="adjustPan" >
-
-
-        </activity>
+            android:windowSoftInputMode="adjustPan"></activity>
         <activity
             android:name=".ScrollTestActivity"
             android:label="@string/title_activity_scroll_test"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".PeopleChat"
+            android:label="@string/title_activity_people_chat"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

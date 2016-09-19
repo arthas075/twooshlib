@@ -146,7 +146,7 @@ public class RoomListAdapter extends BaseAdapter {
 
         tagusers.setText("Users : "+tagger.hash_users);
         tagposts.setText("Posts : "+tagger.hash_posts);
-        tagname.setText(tagger.tagname);
+        tagname.setText("#"+tagger.tagname);
         //tagdesc.setText(tagger.tagdesc);
         tagonlinecount.setText("Online : "+tagger.tagonlinecount);
         //tagimg.setImageResource(tagger.imgsrc);

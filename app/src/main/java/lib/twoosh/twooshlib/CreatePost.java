@@ -53,7 +53,7 @@ public class CreatePost extends AppCompatActivity {
             jObj.put("room", User.current_room);
             jObj.put("user_name",User.name);
             jObj.put("hash_tags", "");
-            jObj.put("corp_referrer", User.corp_referrer);
+            jObj.put("corp_referrer", User.corpid);
             jObj.put("corp_auth", User.corp_auth_token);
 
         } catch (JSONException e) {
@@ -125,9 +125,13 @@ public class CreatePost extends AppCompatActivity {
                 }
             }
         });
+        String host = getResources().getString(R.string.local_host);
+        String createpostapi = getResources().getString(R.string.createpostapi);
 
-        String publishtwoosh_url = getResources().getString(R.string.local_host)+"publishtwoosh";
-        httpclient.Post(this, publishtwoosh_url, twooshobj);
+        String createposturl = host + createpostapi;
+
+
+        httpclient.Post(this, createposturl, twooshobj);
         return "Complete publishing twoosh...";
 
     }
