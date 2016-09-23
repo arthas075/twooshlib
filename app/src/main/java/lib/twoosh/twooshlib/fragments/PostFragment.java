@@ -107,7 +107,7 @@ public class PostFragment extends Fragment {
 
         postref = new Firebase("https://twooshapp-763a4.firebaseio.com");
 
-        postref = postref.child(User.corpid).child("posts");
+        postref = postref.child(User.corpid).child(User.current_room).child("posts");
 
         postref.keepSynced(true);
 
@@ -254,6 +254,8 @@ public class PostFragment extends Fragment {
                 Long ltime = Long.parseLong(time);
                 display_time = new SimpleDateFormat("HH:mm dd-MM-yyyy z").format(new Date(Long.parseLong(time)*1000));
 
+
+                //public PostListItem(String twoosh_text,String twoosh_id, String user_name,String user_count,String replies_count, String online_count, String time )
                 postitem = new PostListItem(twoosh_text,twoosh_id, user_name,users_count,replies_count, online_count,display_time);
                 postref.child(twoosh_id).setValue(postitem);
                 //adapter.add(postitem);

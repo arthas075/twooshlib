@@ -23,6 +23,7 @@ public class User {
     public static String dynamic_location = "";
 
 
+    public static String current_post = "";
     public static String userid = "";
     public static String corpid = "";
     public static String current_room = "";

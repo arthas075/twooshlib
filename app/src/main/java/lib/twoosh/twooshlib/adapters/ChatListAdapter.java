@@ -48,8 +48,8 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatVi
 
         ChatListItem chatitem = chatmessagelist.get(position);
         holder.chat_msg.setText(chatitem.chatmsg);
-        holder.chat_from.setText(chatitem.chatfrom);
-        holder.chat_time.setText(chatitem.chattime);
+        holder.chat_from.setText(chatitem.chat_fromuserid);
+        holder.chat_time.setText(chatitem.chat_unixtime);
     }
 
     @Override

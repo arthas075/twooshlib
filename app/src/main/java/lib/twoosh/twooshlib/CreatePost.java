@@ -61,6 +61,12 @@ public class CreatePost extends AppCompatActivity {
         }
 
         String resp = publishTwooshRemote(jObj);
+        if (resp.equals("1")){
+
+            Intent i = new Intent(CreatePost.this, RoomDock.class);
+            startActivity(i);
+
+        }
 //        serversocket.emit("twooosher",jObj.toString());
 //        persistTwooshRemote(jObj);
 //        persistTwooshLocal(jObj);
@@ -132,7 +138,7 @@ public class CreatePost extends AppCompatActivity {
 
 
         httpclient.Post(this, createposturl, twooshobj);
-        return "Complete publishing twoosh...";
+        return "1";
 
     }
 

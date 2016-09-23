@@ -12,6 +12,16 @@ public class ChatListItem {
     public String chathead;
     public String chattime;
 
+    public String chat_unixtime = "";
+    public String chat_fromuserid="";
+    public String chat_postid ="";
+    public String chat_id = "";
+
+
+
+
+
+
     public ChatListItem(String from,String msg)
     {
         chatfrom = from;
@@ -19,12 +29,15 @@ public class ChatListItem {
 
     }
 
-    public ChatListItem(String chatmsg, String chatfrom,String chattime)
+    public ChatListItem(String chatid, String chatmsg, String chatfrom,String chattime, String twooshpostid)
     {
 
+        this.chat_id =  chatid;
         this.chatmsg = chatmsg;
-        this.chatfrom = chatfrom;
-        this.chattime = chattime;
+        this.chat_fromuserid = chatfrom;
+        this.chat_unixtime = chattime;
+        this.chat_postid = twooshpostid;
+
 
     }
 

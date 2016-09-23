@@ -8,7 +8,7 @@ public class PostListItem {
 
 
     public String twoosh_text;
-    public static String twoosh_id;
+    public String twoosh_id;
     public String user_id;
     public String user_name;
     public String hash_tags;
