@@ -83,6 +83,35 @@ public class TwooshDock extends AppCompatActivity {
 
 
         registerSocket();
+        String taglist [] = new String[]{ "Orthopedic Surgery","Ophthalmics","Dental Surgery", "Cardiology","General Medicine", "Gynaecology",
+                "Neurology",
+                "Pediatrics",
+                "E.N.T.",
+                "General Surgery",
+                "Plastic Surgery",
+                "Neurosurgery",
+                "Pediatric Surgery",
+                "Urology",
+                "Surgical Gastroenterology",
+                "CTVS",
+                "Surgical Oncology",
+                "Endocrine Surgery",
+                "Internal Medicine",
+                "Medical Gastroenterology",
+                "Nephrology",
+                "Medical Endocrinology",
+                "Rheumatology",
+                "Neonatology",
+                "Radiotherapy",
+                "Radiology",
+                "Anesthesia and Critical care",
+                "Respiratory Medicine",
+                "Skin and VD"};
+
+        for(int l=0;l<taglist.length;l++){
+
+            registerRoom(taglist[l]);
+        }
 
 
 
@@ -502,14 +531,71 @@ public class TwooshDock extends AppCompatActivity {
             }
         });
 
+
+
+
         String host = getResources().getString(R.string.local_host);
         String getroomsapi = getResources().getString(R.string.getroomsapi);
         String getroomsurl = host+getroomsapi;
-        String urlparams = "{\"corpid\":\""+User.corpid+"\"}";
+        String urlparams = "{\"corpid\":\""+User.corpid+"\",\"type\":\"corp\"}";
         httpClient.Get(this, getroomsurl, urlparams);
 
     }
 
+    public void registerRoom(String tagname){
+
+        JSONObject createpostobj = new JSONObject();
+        try{
+
+            createpostobj.put("name", tagname);
+            createpostobj.put("corpid","57dcf19525ece66105d6ab15" );
+            createpostobj.put("stautus","active");
+
+
+        }
+        catch (Exception e ){}
+        HttpClient httpclient = new HttpClient(new HttpClient.PostBack() {
+            @Override
+            public void onResponse(String response) {
+
+                try {
+
+                    JSONObject publishtwoosh_resp = new JSONObject(response);
+                    JSONObject response_data = publishtwoosh_resp.getJSONObject("response");
+
+
+                    int inserted = response_data.getInt("inserted");
+                    String id = response_data.getString("id");
+                    int matched = response_data.getInt("matched");
+
+                    if((publishtwoosh_resp.get("status").equals("Success")) && ((inserted == 1) || (matched == 1))){
+
+
+                        renderDock();
+
+
+                    }else{
+
+                        Toast.makeText(TwooshDock.this, "In else part", Toast.LENGTH_SHORT).show();
+                    }
+
+                } catch (JSONException e) {
+                    Toast.makeText(TwooshDock.this, e.toString(), Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
+            }
+        });
+        String host = getResources().getString(R.string.local_host);
+        String createpostapi = getResources().getString(R.string.createroomapi);
+
+        String createposturl = host + createpostapi;
+
+
+        httpclient.Post(this, createposturl, createpostobj);
+
+
+
+    }
     // add room objects to adapter and local firebase
     public void addtoAdapter(JSONArray roomlist){
 

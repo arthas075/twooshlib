@@ -18,6 +18,7 @@
     <string name="getpostsapi">/getposts</string>
     <string name="getpeopleapi">/getpeople</string>
     <string name="createpostapi">/publishtwoosh</string>
+    <string name="createroomapi">/createroom</string>
     <string name="title_activity_create_post">CreatePost</string>
     <string name="title_activity_chatbox">Chatbox</string>
     <string name="title_activity_scrolling">ScrollingActivity</string>
