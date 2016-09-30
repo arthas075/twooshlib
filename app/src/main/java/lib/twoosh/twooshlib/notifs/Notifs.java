@@ -14,6 +14,7 @@ import org.json.JSONObject;
 import lib.twoosh.twooshlib.Chatbox;
 import lib.twoosh.twooshlib.R;
 import lib.twoosh.twooshlib.RoomDock;
+import lib.twoosh.twooshlib.TwooshDock;
 
 /**
  * Created by arthas on 22/9/16.
@@ -34,17 +35,19 @@ public class Notifs {
     public void notify(Context c,JSONObject payload)
     {
 
-        msghead = "Twoosh";
+        msghead = "Twoosh - You are connected";
         try {
 
-            msg=payload.getString("chatfromname")+" : "+payload.getString("chatmsg");
+//            msg=payload.getString("chatfromname")+" : "+payload.getString("chatmsg");
+            msghead=payload.getString("head");
+            msg=payload.getString("body");
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(c)
-                        .setSmallIcon(R.drawable.curiosity)
+                        .setSmallIcon(R.drawable.twoosh_icon)
                         .setContentTitle(msghead)
                         .setContentText(msg);
 
@@ -61,7 +64,7 @@ public class Notifs {
 //        resultIntent.putExtra("chatmsg","hello");
 
 
-        Intent backIntent = new Intent(c, RoomDock.class);
+        Intent backIntent = new Intent(c, TwooshDock.class);
         PendingIntent pintent = PendingIntent.getActivity(c, 0,
                 resultIntent, 0);
 

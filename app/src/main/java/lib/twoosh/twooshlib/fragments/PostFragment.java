@@ -3,6 +3,7 @@ package lib.twoosh.twooshlib.fragments;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -104,76 +105,76 @@ public class PostFragment extends Fragment {
 
     public void setFirebase(){
 
-
-        postref = new Firebase("https://twooshapp-763a4.firebaseio.com");
-
-        postref = postref.child(User.corpid).child(User.current_room).child("posts");
-
-        postref.keepSynced(true);
-
-
-        postref.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot snapshot, String previousChild) {
-                System.out.println("The " + snapshot.getKey() + " dinosaur's score is " + snapshot.getValue());
-                postcount = postcount+1;
-                PostListItem post_local = snapshot.getValue(PostListItem.class);
-                Toast.makeText(getActivity(), "Total local objects - " + snapshot.getChildrenCount(), Toast.LENGTH_SHORT).show();
-                adapter.add(post_local);
-                if (postcount==1){
-                    ViewFlipper vf = (ViewFlipper)getView().findViewById(R.id.postviewflipper);
-                    vf.showNext();
-                }
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-
-            }
-        });
 //
-//        wordlistref.addListenerForSingleValueEvent(new ValueEventListener() {
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                System.out.println("We're done loading the initial " + dataSnapshot.getChildrenCount() + " items");
-//                adapter.notifyDataSetChanged();
-//                Toast.makeText(getApplicationContext(), "Add data change called ", Toast.LENGTH_SHORT).show();
-//            }
+//        postref = new Firebase("https://twooshapp-763a4.firebaseio.com");
 //
-//            public void onCancelled(FirebaseError firebaseError) {
-//            }
-//        });
-
-        postref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                System.out.println(snapshot.getValue());
-                adapter.notifyDataSetChanged();
-//                if(adapter.getCount()>0){
+//        postref = postref.child(User.corpid).child(User.current_room).child("posts");
+//
+//        postref.keepSynced(true);
+//
+//
+//        postref.addChildEventListener(new ChildEventListener() {
+//            @Override
+//            public void onChildAdded(DataSnapshot snapshot, String previousChild) {
+//                System.out.println("The " + snapshot.getKey() + " dinosaur's score is " + snapshot.getValue());
+//                postcount = postcount+1;
+//                PostListItem post_local = snapshot.getValue(PostListItem.class);
+//                Toast.makeText(getActivity(), "Total local objects - " + snapshot.getChildrenCount(), Toast.LENGTH_SHORT).show();
+//                adapter.add(post_local);
+//                if (postcount==1){
 //                    ViewFlipper vf = (ViewFlipper)getView().findViewById(R.id.postviewflipper);
 //                    vf.showNext();
 //                }
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-                System.out.println("The read failed: " + firebaseError.getMessage());
-            }
-        });
+//            }
+//
+//            @Override
+//            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+//
+//            }
+//
+//            @Override
+//            public void onChildRemoved(DataSnapshot dataSnapshot) {
+//
+//            }
+//
+//            @Override
+//            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(FirebaseError firebaseError) {
+//
+//            }
+//        });
+////
+////        wordlistref.addListenerForSingleValueEvent(new ValueEventListener() {
+////            public void onDataChange(DataSnapshot dataSnapshot) {
+////                System.out.println("We're done loading the initial " + dataSnapshot.getChildrenCount() + " items");
+////                adapter.notifyDataSetChanged();
+////                Toast.makeText(getApplicationContext(), "Add data change called ", Toast.LENGTH_SHORT).show();
+////            }
+////
+////            public void onCancelled(FirebaseError firebaseError) {
+////            }
+////        });
+//
+//        postref.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot snapshot) {
+//                System.out.println(snapshot.getValue());
+//                adapter.notifyDataSetChanged();
+////                if(adapter.getCount()>0){
+////                    ViewFlipper vf = (ViewFlipper)getView().findViewById(R.id.postviewflipper);
+////                    vf.showNext();
+////                }
+//            }
+//
+//            @Override
+//            public void onCancelled(FirebaseError firebaseError) {
+//                System.out.println("The read failed: " + firebaseError.getMessage());
+//            }
+//        });
 
     }
 
@@ -221,11 +222,12 @@ public class PostFragment extends Fragment {
 
 
         Toast.makeText(getActivity(), "Inside add adapter...", Toast.LENGTH_SHORT).show();
-        if(postlist.length()>0){
-//
+//        if(postlist.length()>0){
+////
 //            ViewFlipper vf = (ViewFlipper)getView().findViewById(R.id.postviewflipper);
+//
 //            vf.showNext();
-        }
+//        }
         JSONObject twooshobj = null;
         PostListItem postitem;
         Date d;
@@ -242,7 +244,7 @@ public class PostFragment extends Fragment {
             try {
 
                 twooshobj = new JSONObject(postlist.get(i).toString());
-                String twoosh_text = twooshobj.getString("twoosh_text");
+                String twoosh_text = twooshobj.getString("q");
                 String twoosh_id = twooshobj.getString("_id");
                 String user_name = twooshobj.getString("user_name");
                 String user_id = twooshobj.getString("user_id");
@@ -257,8 +259,8 @@ public class PostFragment extends Fragment {
 
                 //public PostListItem(String twoosh_text,String twoosh_id, String user_name,String user_count,String replies_count, String online_count, String time )
                 postitem = new PostListItem(twoosh_text,twoosh_id, user_name,users_count,replies_count, online_count,display_time);
-                postref.child(twoosh_id).setValue(postitem);
-                //adapter.add(postitem);
+                //postref.child(twoosh_id).setValue(postitem);
+                adapter.add(postitem);
             } catch (JSONException e) {
                 Toast.makeText(getActivity(),e.toString(),Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
@@ -267,7 +269,7 @@ public class PostFragment extends Fragment {
 
         }
 
-        //adapter.notifyDataSetChanged();
+        adapter.notifyDataSetChanged();
 
 
 
@@ -283,21 +285,31 @@ public class PostFragment extends Fragment {
     }
     public void attachListeners(){
 
-        Button askq_btn=(Button)getView().findViewById(R.id.askqbtn);
+//        Button askq_btn=(Button)getView().findViewById(R.id.askqbtn);
+//
+//
+//       askq_btn.setOnClickListener(new View.OnClickListener() {
+//           @Override
+//           public void onClick(View v) {
+//
+//               Toast.makeText(getActivity(), "Wanna create a new post ??", Toast.LENGTH_SHORT).show();
+//               Intent i = new Intent(getActivity(), CreatePost.class);
+//               startActivity(i);
+//
+//
+//           }
+//       });
 
-
-       askq_btn.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View v) {
-
-               Toast.makeText(getActivity(), "Wanna create a new post ??", Toast.LENGTH_SHORT).show();
-               Intent i = new Intent(getActivity(), CreatePost.class);
-               startActivity(i);
-
-
-           }
-       });
-
+        FloatingActionButton fab = (FloatingActionButton)getView().findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                POSTkbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+                Intent intent = new Intent(getActivity(),CreatePost.class);
+                startActivity(intent);
+            }
+        });
 
         ListView list=(ListView)getView().findViewById(R.id.postList);
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {

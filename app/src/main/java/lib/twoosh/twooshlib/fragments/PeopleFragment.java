@@ -80,75 +80,75 @@ public class PeopleFragment extends Fragment {
     public void setFireBase(){
 
 
-        peopleref = new Firebase("https://twooshapp-763a4.firebaseio.com");
-
-        peopleref = peopleref.child(User.corpid).child(User.current_room).child("people");
-
-        peopleref.keepSynced(true);
-
-
-        peopleref.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot snapshot, String previousChild) {
-                System.out.println("The " + snapshot.getKey() + " dinosaur's score is " + snapshot.getValue());
-                people_count = people_count+1;
-                PeopleListItem post_local = snapshot.getValue(PeopleListItem.class);
-                Toast.makeText(getActivity(), "Total local objects - " + snapshot.getChildrenCount(), Toast.LENGTH_SHORT).show();
-                peopleAdapter.add(post_local);
-                if (people_count==1){
-//                    ViewFlipper vf = (ViewFlipper)getView().findViewById(R.id.postviewflipper);
-//                    vf.showNext();
-                }
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-
-            }
-        });
+//        peopleref = new Firebase("https://twooshapp-763a4.firebaseio.com");
 //
-//        wordlistref.addListenerForSingleValueEvent(new ValueEventListener() {
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                System.out.println("We're done loading the initial " + dataSnapshot.getChildrenCount() + " items");
-//                adapter.notifyDataSetChanged();
-//                Toast.makeText(getApplicationContext(), "Add data change called ", Toast.LENGTH_SHORT).show();
+//        peopleref = peopleref.child(User.corpid).child(User.current_room).child("people");
+//
+//        peopleref.keepSynced(true);
+//
+//
+//        peopleref.addChildEventListener(new ChildEventListener() {
+//            @Override
+//            public void onChildAdded(DataSnapshot snapshot, String previousChild) {
+//                System.out.println("The " + snapshot.getKey() + " dinosaur's score is " + snapshot.getValue());
+//                people_count = people_count+1;
+//                PeopleListItem post_local = snapshot.getValue(PeopleListItem.class);
+//                Toast.makeText(getActivity(), "Total local objects - " + snapshot.getChildrenCount(), Toast.LENGTH_SHORT).show();
+//                peopleAdapter.add(post_local);
+//                if (people_count==1){
+////                    ViewFlipper vf = (ViewFlipper)getView().findViewById(R.id.postviewflipper);
+////                    vf.showNext();
+//                }
 //            }
 //
+//            @Override
+//            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+//
+//            }
+//
+//            @Override
+//            public void onChildRemoved(DataSnapshot dataSnapshot) {
+//
+//            }
+//
+//            @Override
+//            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+//
+//            }
+//
+//            @Override
 //            public void onCancelled(FirebaseError firebaseError) {
+//
 //            }
 //        });
-
-        peopleref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                System.out.println(snapshot.getValue());
-                peopleAdapter.notifyDataSetChanged();
-//                if(adapter.getCount()>0){
-//                    ViewFlipper vf = (ViewFlipper)getView().findViewById(R.id.postviewflipper);
-//                    vf.showNext();
-//                }
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-                System.out.println("The read failed: " + firebaseError.getMessage());
-            }
-        });
+////
+////        wordlistref.addListenerForSingleValueEvent(new ValueEventListener() {
+////            public void onDataChange(DataSnapshot dataSnapshot) {
+////                System.out.println("We're done loading the initial " + dataSnapshot.getChildrenCount() + " items");
+////                adapter.notifyDataSetChanged();
+////                Toast.makeText(getApplicationContext(), "Add data change called ", Toast.LENGTH_SHORT).show();
+////            }
+////
+////            public void onCancelled(FirebaseError firebaseError) {
+////            }
+////        });
+//
+//        peopleref.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot snapshot) {
+//                System.out.println(snapshot.getValue());
+//                peopleAdapter.notifyDataSetChanged();
+////                if(adapter.getCount()>0){
+////                    ViewFlipper vf = (ViewFlipper)getView().findViewById(R.id.postviewflipper);
+////                    vf.showNext();
+////                }
+//            }
+//
+//            @Override
+//            public void onCancelled(FirebaseError firebaseError) {
+//                System.out.println("The read failed: " + firebaseError.getMessage());
+//            }
+//        });
 
     }
 
@@ -215,8 +215,8 @@ public class PeopleFragment extends Fragment {
                 //String name,String pic, String email,String mobile, String gender,String dob, String corp_id, String corp_appname, String taglist
 
                 pplitem = new PeopleListItem(user_name, user_dp, user_email, user_mobile, user_gender, user_dob, user_corpid, user_appname,User.current_room, user_id);
-                //peopleAdapter.add(pplitem);
-                 peopleref.child(user_id).setValue(pplitem);
+                peopleAdapter.add(pplitem);
+                 //peopleref.child(user_id).setValue(pplitem);
             } catch (JSONException e) {
                 Toast.makeText(getActivity(),e.toString(),Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
@@ -225,7 +225,7 @@ public class PeopleFragment extends Fragment {
 
         }
 
-       // peopleAdapter.notifyDataSetChanged();
+        peopleAdapter.notifyDataSetChanged();
 
     }
 

@@ -19,12 +19,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.client.AuthData;
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Text;
 
@@ -34,6 +37,7 @@ import lib.twoosh.twooshlib.adapters.ChatListAdapter;
 import lib.twoosh.twooshlib.models.ChatListItem;
 import lib.twoosh.twooshlib.models.PeopleListItem;
 import lib.twoosh.twooshlib.models.User;
+import lib.twoosh.twooshlib.networks.HttpClient;
 import lib.twoosh.twooshlib.notifs.Notifs;
 
 public class Chatbox extends AppCompatActivity {
@@ -44,6 +48,7 @@ public class Chatbox extends AppCompatActivity {
     private NestedScrollView nestedScrollView;
     static String twoosh_id = "";
     Firebase postchatref = null;
+    Firebase.AuthResultHandler authResultHandler = null;
 
 
     @Override
@@ -108,7 +113,7 @@ public class Chatbox extends AppCompatActivity {
          //use a linear layout manager
         chatboxAdapter = new ChatListAdapter();
         chatLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-       // chatLayoutManager.setStackFromEnd(true);
+        chatLayoutManager.setStackFromEnd(true);
 
         chatRecyclerView.setLayoutManager(chatLayoutManager);
         chatRecyclerView.setAdapter(chatboxAdapter);
@@ -125,12 +130,12 @@ public class Chatbox extends AppCompatActivity {
 
     public void setFirebaseForChat(){
 
-        postchatref = new Firebase("https://twooshapp-763a4.firebaseio.com");
-        postchatref = postchatref.child(User.corpid).child("chats").child(this.twoosh_id);
-
-        postchatref.keepSynced(true);
-
-
+         postchatref = new Firebase("https://twooshapp-763a4.firebaseio.com");
+         postchatref = postchatref.child("posts").child(this.twoosh_id);
+//
+         postchatref.keepSynced(true);
+//
+         getFirebaseAuth();
         postchatref.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot snapshot, String previousChild) {
@@ -151,15 +156,6 @@ public class Chatbox extends AppCompatActivity {
 
                 //public ChatListItem(String chatid, String chatmsg, String chatfrom,String chattime, String twooshpostid)
                 ChatListItem m = new ChatListItem(chat_id, chat_msg, from, chat_unix, "123213");
-
-//
-//                try{
-//                    m = snapshot.child("57de887ee40a1046f330b77b1474484476").getValue(ChatListItem.class);
-//                }
-//                catch (Exception g){
-//                    System.out.print(g.toString());
-//                }
-//                System.out.print("hi");
                 chatboxAdapter.add(m);
 
 //                for (DataSnapshot postSnapshot: snapshot.getChildren()) {
@@ -193,9 +189,9 @@ public class Chatbox extends AppCompatActivity {
 
             }
         });
-////
-
 //
+
+
         postchatref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
@@ -206,6 +202,19 @@ public class Chatbox extends AppCompatActivity {
 //                ChatListItem post = d.getValue(ChatListItem.class);
 //
                 chatboxAdapter.notifyDataSetChanged();
+//                chatLayoutManager.setStackFromEnd(true);
+                chatRecyclerView.scrollToPosition(chatboxAdapter.getItemCount() - 1);
+                JSONObject notification_payload = new JSONObject();
+                try{
+                    notification_payload.put("head","Twoosh - You are connected.");
+                    notification_payload.put("body","Chat msg");
+                }
+                catch (Exception e){
+
+                }
+                Notifs notify = new Notifs();
+                notify.notify(getApplicationContext(), notification_payload);
+
 //                if(adapter.getCount()>0){
 //                    ViewFlipper vf = (ViewFlipper)getView().findViewById(R.id.postviewflipper);
 //                    vf.showNext();
@@ -219,14 +228,65 @@ public class Chatbox extends AppCompatActivity {
         });
 
 
-
-
+        // Create a handler to handle the result of the authentication
+        authResultHandler = new Firebase.AuthResultHandler() {
+            @Override
+            public void onAuthenticated(AuthData authData) {
+                // Authenticated successfully with payload authData
+                System.out.println("The read failed: " );
+            }
+            @Override
+            public void onAuthenticationError(FirebaseError firebaseError) {
+                // Authenticated failed with error firebaseError
+                System.out.println("The read failed: " );
+                getFirebaseAuth();
+            }
+        };
+        // Authenticate users with a custom Firebase token
+        //postchatref.authWithCustomToken("eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCJ9.eyJ2IjowLCJkIjp7InVpZCI6ImprbWMifSwiaWF0IjoxNDc0ODI1NjQ1fQ.5nhN_zfC2Wc9N6d4x1siBwr1_m8RQ7H69-GgYukLSfw", authResultHandler);
 
 
     }
 
 
+    public void getFirebaseAuth(){
+        HttpClient httpClient = new HttpClient(new HttpClient.GetBack(){
 
+            @Override
+            public void onResponse(String response) {
+
+                try {
+
+                    //Toast.makeText(TwooshDock.this, response, Toast.LENGTH_SHORT).show();
+                    JSONObject roomlist_response = new JSONObject(response);
+                    if(roomlist_response.getString("status").equals("Success") && (roomlist_response.getString("response").length()>0)){
+                        User.f_access_token = roomlist_response.getString("response");
+                        postchatref.authWithCustomToken(User.f_access_token, authResultHandler);
+                    }
+
+
+                } catch (JSONException e) {
+                    //Toast.makeText(TwooshDock.this, e.toString(), Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
+            }
+        });
+
+
+
+
+        String host = getResources().getString(R.string.local_host);
+        String getroomsapi = getResources().getString(R.string.getfaccessapi);
+        String getroomsurl = host+getroomsapi;
+
+        String urlparams;
+
+        urlparams = "{\"access_token\":\""+User.access_token+"\"}";
+        httpClient.Get(this, getroomsurl, urlparams);
+
+
+
+    }
     public void inflateDummyDataAdapter(){
 
 //        ChatListItem dummychat; //= new ChatListItem("You are all dumbfucks...","Satyam : ","21:23 GMT");
@@ -319,8 +379,8 @@ public class Chatbox extends AppCompatActivity {
 
         JSONObject notification_payload = new JSONObject();
         try{
-            notification_payload.put("chatmsg","1");
-            notification_payload.put("chatfromname","SATyam");
+            notification_payload.put("head","New chat msg...");
+            notification_payload.put("body","Twoosh - You are connected.");
         }
         catch (Exception e){
 

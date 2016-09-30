@@ -7,6 +7,12 @@ public class User {
 
 
     // User details
+    public static String user_type = "";
+
+    public static String corp_token = "";
+    public static String corp_secret = "";
+
+
     public static String name = "";
     public static String email = "";
     public static String mobile = "";
@@ -19,6 +25,9 @@ public class User {
     public static String corp_referrer = "";
     public static String access_token = "";
     public static String appname = "";
+    public static String pwd = "";
+
+    public static String f_access_token = "";
 
     public static String dynamic_location = "";
 
@@ -28,44 +37,12 @@ public class User {
     public static String corpid = "";
     public static String current_room = "";
 
+    public static boolean newuser = true;
+    public static String pending_twoosh = "";
+
 
     // Company details
     public static String corp_auth_token = "";
-
-
-
-    // Compulsory parameters
-    // Name email mobile gender dob location photo?
-    //
-//    public static String name = "";
-//    public static String name = "";
-//    public static String name = "";
-//    public static String name = "";
-//    public static String name = "";
-//    public static String name = "";
-//    public static String name = "";
-//    public static String name = "";
-//    public static String name = "";
-//    public static String name = "";
-//    public static String name = "";
-//    public static String name = "";
-//    public static String name = "";
-//    public static String name = "";
-//    public static String name = "";
-//    public static String name = "";
-//    public static String name = "";
-//    public static String name = "";
-//    public static String name = "";
-//    public static String name = "";
-//    public static String name = "";
-//    public static String name = "";
-//    public static String name = "";
-//    public static String name = "";
-//    public static String name = "";
-//    public static String name = "";
-//    public static String name = "";
-
-
 
 
 

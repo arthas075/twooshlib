@@ -16,10 +16,15 @@ public class RoomListItem {
 
 
 
+    public String tag_name = "";
+    public String tag_id = "";
+
+
+
     public RoomListItem(String hashtag,String hashid,String hash_users,String hash_posts )
     {
-        this.tagname = hashtag;
-        this.hashid = hashid;
+        this.tag_name = hashtag;
+        this.tag_id = hashid;
         this.hash_users = hash_users;
         this.hash_posts = hash_posts;
 

@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -31,15 +32,32 @@ public class CreatePost extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_post);
 
-
+        initActivity();
         attachListeners();
     }
 
+    public void initActivity(){
+
+        if(User.newuser && User.access_token.equals("")){
+
+            // show name and mobile inputs
+           // showNameAndEmailInputs();
+        }
+    }
+
+    public void showNameAndEmailInputs(){
+
+//        LinearLayout entername = (LinearLayout)findViewById(R.id.twoosh_enter_name);
+//        LinearLayout entermobile = (LinearLayout)findViewById(R.id.twoosh_enter_mobile);
+//        entername.setVisibility(View.VISIBLE);
+//        entermobile.setVisibility(View.VISIBLE);
+    }
     public void performTwoosh(String twooshraw){
 
 
 
         JSONObject jObj = new JSONObject();
+
 
         String hashtags = getHashTags(twooshraw);
         try {
@@ -80,7 +98,9 @@ public class CreatePost extends AppCompatActivity {
         return "";
     }
     private boolean sanitizeText(String twooshraw){
-
+        if(twooshraw.equals("")){
+            return false;
+        }
         return true;
     }
 
@@ -135,6 +155,12 @@ public class CreatePost extends AppCompatActivity {
         String createpostapi = getResources().getString(R.string.createpostapi);
 
         String createposturl = host + createpostapi;
+        try{
+            twooshobj.put("q",twooshobj.getString("twoosh_text"));
+
+            twooshobj.put("token",User.access_token);
+        }
+        catch (Exception e){}
 
 
         httpclient.Post(this, createposturl, twooshobj);
@@ -160,17 +186,34 @@ public class CreatePost extends AppCompatActivity {
 
 
                String twooshraw = twoosh.getText().toString().trim();
-               Toast.makeText(CreatePost.this,twooshraw,Toast.LENGTH_SHORT).show();
-               twoosh.setText("");
+              // Toast.makeText(CreatePost.this,twooshraw,Toast.LENGTH_SHORT).show();
+
 
                boolean sanitize_twooshraw = sanitizeText(twooshraw);
                if(sanitize_twooshraw){
 
-                    performTwoosh(twooshraw);
+                    if(twooshraw.length()>140){
+                        Snackbar.make(v, "Max 140 characters limit crossed...", Snackbar.LENGTH_LONG)
+                                .setAction("Action", null).show();
+                    }else{
+
+                        if(User.access_token.equals("")){
+                            User.pending_twoosh = twooshraw;
+                            Intent signup = new Intent(CreatePost.this, Signup.class);
+                            startActivity(signup);
+                        }else{
+                            performTwoosh(twooshraw);
+                            twoosh.setText("");
+                        }
+
+                    }
+
 
                }else{
 
-                   Toast.makeText(CreatePost.this,"Please make a valid input...",Toast.LENGTH_SHORT).show();
+                  // Toast.makeText(CreatePost.this,"Please make a valid input...",Toast.LENGTH_SHORT).show();
+                   Snackbar.make(v, "Please enter some text...", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
                }
 
            }

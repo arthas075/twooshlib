@@ -109,8 +109,8 @@ public class RoomListAdapter extends BaseAdapter {
             try {
 
                 tagjson = new JSONObject(tagdata.get(i).toString());
-                tagger.tagname = tagjson.getString("hashtag");
-                tagger.hashid = tagjson.getString("hashid");
+                tagger.tag_name = tagjson.getString("hashtag");
+                tagger.tag_id = tagjson.getString("hashid");
                 tagger.hash_users = tagjson.getString("hash_users");
                 tagger.hash_posts = tagjson.getString("hash_posts");
                 add(tagger);
@@ -146,7 +146,7 @@ public class RoomListAdapter extends BaseAdapter {
 
         tagusers.setText("Users : "+tagger.hash_users);
         tagposts.setText("Posts : "+tagger.hash_posts);
-        tagname.setText("#"+tagger.tagname);
+        tagname.setText("#"+tagger.tag_name);
         //tagdesc.setText(tagger.tagdesc);
         tagonlinecount.setText("Online : "+tagger.tagonlinecount);
         //tagimg.setImageResource(tagger.imgsrc);

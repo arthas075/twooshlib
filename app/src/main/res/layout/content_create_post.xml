@@ -99,6 +99,7 @@
                 android:id="@+id/online_count"
                 android:gravity="center_horizontal"
                 android:layout_marginTop="80dp"
+                android:visibility="gone"
                 android:text="People Online : 100"/>
 
 

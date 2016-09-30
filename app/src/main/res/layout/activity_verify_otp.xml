@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+
+   >
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/twoosh_enter_otp"
+        android:padding="3dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18dp"
+            android:textColor="@color/twooshblue"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="7dp"
+            android:text="Enter OTP to verify..."/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="1dp"
+            android:background="@drawable/et_border_gray"
+            android:textCursorDrawable="@null"
+            android:padding="10dp"
+            android:id="@+id/twoosh_user_otp"
+            android:hint="Enter otp..."/>
+
+    </LinearLayout>
+
+
+
+
+
+
+
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Verify OTP"
+        android:layout_marginTop="50dp"
+        android:textColor="#fff"
+        android:background="#99cc00"
+        android:id="@+id/VerifyOTP"/>
+
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Resend OTP"
+        android:layout_marginTop="50dp"
+        android:textColor="#fff"
+        android:background="#99cc00"
+        android:id="@+id/ResendOTP"/>
+
+
+
+</LinearLayout>
