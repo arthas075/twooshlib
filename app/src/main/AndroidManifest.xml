@@ -19,15 +19,20 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".TwooshDock">
+
+        </activity>
+        <activity
+            android:name=".RoomDock"
+            android:label="@string/title_activity_room_dock" >
+
+
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".RoomDock"
-            android:label="@string/title_activity_room_dock" />
         <activity
             android:name=".CreatePost"
             android:label="@string/title_activity_create_post"
