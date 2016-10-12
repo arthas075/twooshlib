@@ -6,18 +6,25 @@ package lib.twoosh.twooshlib.models;
 public class RoomListItem {
 
 
+    // actually used
+    public String hash_users;
+    public String hash_posts;
+    public String tag_name = "";
+    public String tag_id = "";
+    public String ts ;
+    public String creator;
+
+
+
     public String tagname;
     public String tagdesc;
     public String hashid;
     //public int imgsrc;
     public int tagonlinecount ;
-    public String hash_users;
-    public String hash_posts;
 
 
 
-    public String tag_name = "";
-    public String tag_id = "";
+
 
 
 

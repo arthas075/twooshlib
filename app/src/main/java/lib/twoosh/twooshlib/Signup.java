@@ -3,9 +3,7 @@ package lib.twoosh.twooshlib;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -22,15 +20,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -39,10 +34,10 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import lib.twoosh.twooshlib.models.User;
 import lib.twoosh.twooshlib.networks.HttpClient;
 
 import static android.Manifest.permission.READ_CONTACTS;
-import static android.Manifest.permission.SIGNAL_PERSISTENT_PROCESSES;
 
 /**
  * A login screen that offers login via email/password.
@@ -94,65 +89,81 @@ public class Signup extends AppCompatActivity implements LoaderCallbacks<Cursor>
 //            }
 //        });
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.Signup);
+        Button signupbtn = (Button) findViewById(R.id.Signup);
         final EditText enter_name = (EditText)findViewById(R.id.twoosh_user_name);
         final EditText enter_mobile = (EditText)findViewById(R.id.twoosh_user_mobile);
         final EditText enter_pwd = (EditText)findViewById(R.id.twoosh_user_password);
 
 
-        mEmailSignInButton.setOnClickListener(new OnClickListener() {
+        signupbtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                String name = enter_name.getText().toString();
-                String mobile = enter_mobile.getText().toString();
-                String pwd = enter_pwd.getText().toString();
+//                String name = enter_name.getText().toString();
+                String mobilestr = enter_mobile.getText().toString();
+//                String pwd = enter_pwd.getText().toString();
 
-                if(name.equals("")){
+//                if(name.equals("")){
+//
+//                                    Snackbar.make(view, "Please enter name...", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+//                }else
 
-                                    Snackbar.make(view, "Please enter name...", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-                }else if(mobile.equals("") || mobile.length()<10){
+                if(mobilestr.equals("") || mobilestr.length()<10){
 
                     Snackbar.make(view, "Please enter 10 digit mobile...", Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
-                }else if(pwd.equals("") || pwd.length()<6){
-
-                    Snackbar.make(view, "PLease choose a password minimum 6 characters...", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                }else
+//                }else if(pwd.equals("") || pwd.length()<6){
+//
+//                    Snackbar.make(view, "PLease choose a password minimum 6 characters...", Snackbar.LENGTH_LONG)
+//                            .setAction("Action", null).show();
+                }
+                else
                 {
-
-                    JSONObject signup = new JSONObject();
                     try{
-
-                        signup.put("name",name);
-                        signup.put("mobile",mobile);
-                        signup.put("pwd",pwd);
-
-                        // set to prefs
-                        mobile_pass = mobile;
-                        pwd_pass = pwd;
-                        JSONObject userdetails = new JSONObject();
-
-                        try{
-                            userdetails.put("mobile", mobile);
-                            userdetails.put("pwd",pwd);
-                            userdetails.put("access_token","");
-                            userdetails.put("otp_verified","0");
-                        }
-                        catch (Exception e){}
-                        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(
-                                "info.twoosh.TwooshUserPref", Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = sharedPref.edit();
-                        editor.putString("twoosher",userdetails.toString());
-                        editor.commit();
-
+                        long mobilelong = Long.parseLong(mobilestr);
+                        User.mobile = mobilestr;
+                        User.mobilelong = mobilelong;
+                        User.appname = "Twoosh";
+                        Intent signup2 = new Intent(Signup.this, Signup2.class);
+                        startActivity(signup2 );
                     }
                     catch (Exception e){
-
+                        Snackbar.make(view, "Please enter valid digits...", Snackbar.LENGTH_LONG)
+                                .setAction("Action", null).show();
                     }
-                    signupAPI(signup);
+
+
+//                    JSONObject signup = new JSONObject();
+//                    try{
+//
+//                        signup.put("name",name);
+//                        signup.put("mobile",mobile);
+//                        signup.put("pwd",pwd);
+//
+//                        // set to prefs
+//                        mobile_pass = mobile;
+//                        pwd_pass = pwd;
+//                        JSONObject userdetails = new JSONObject();
+//
+//                        try{
+//                            userdetails.put("mobile", mobile);
+//                            userdetails.put("pwd",pwd);
+//                            userdetails.put("access_token","");
+//                            userdetails.put("otp_verified","0");
+//                        }
+//                        catch (Exception e){}
+//                        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(
+//                                "info.twoosh.TwooshUserPref", Context.MODE_PRIVATE);
+//                        SharedPreferences.Editor editor = sharedPref.edit();
+//                        editor.putString("twoosher",userdetails.toString());
+//                        editor.commit();
+//
+//                    }
+//                    catch (Exception e){
+//
+//                    }
+//                    signupAPI(signup);
                 }
 
 

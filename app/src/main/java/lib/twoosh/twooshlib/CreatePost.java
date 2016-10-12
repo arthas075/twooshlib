@@ -16,14 +16,20 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.firebase.client.ServerValue;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Date;
 
+import lib.twoosh.twooshlib.models.Fref;
+import lib.twoosh.twooshlib.models.PostListItem;
+import lib.twoosh.twooshlib.models.Prefs;
 import lib.twoosh.twooshlib.models.RoomListItem;
 import lib.twoosh.twooshlib.models.User;
 import lib.twoosh.twooshlib.networks.HttpClient;
+import lib.twoosh.twooshlib.notifs.NotifObj;
 
 public class CreatePost extends AppCompatActivity {
 
@@ -38,13 +44,34 @@ public class CreatePost extends AppCompatActivity {
 
     public void initActivity(){
 
-        if(User.newuser && User.access_token.equals("")){
+        touchUser();
+//        if(User.newuser && User.access_token.equals("")){
 
             // show name and mobile inputs
            // showNameAndEmailInputs();
-        }
+       // }
     }
 
+    public void touchUser(){
+
+        Prefs p = new Prefs(getApplicationContext());
+        if(p.prefExists()){
+
+            p.setUserStatics();
+            initFirebase();
+        }
+
+
+
+
+
+
+    }
+
+    public void initFirebase(){
+
+
+    }
     public void showNameAndEmailInputs(){
 
 //        LinearLayout entername = (LinearLayout)findViewById(R.id.twoosh_enter_name);
@@ -57,34 +84,52 @@ public class CreatePost extends AppCompatActivity {
 
 
         JSONObject jObj = new JSONObject();
+        Date utildate = new Date();
+        String twoosh_ts =  Long.toString(utildate.getTime()/1000);
+        String twooshid = "T"+twoosh_ts;
+        PostListItem newpost = new PostListItem(twooshraw,"T"+twoosh_ts,User.name, User.userid, "1","0","0",twoosh_ts);
+        newpost.timestring = ServerValue.TIMESTAMP;
+        Fref.fref_base.child(User.current_room).child(twooshid).setValue(newpost);
+
+        // set notification channel
+        NotifObj notifobj = new NotifObj();
+        notifobj.notif_type = "NP";
+        notifobj.room = User.current_room;
+        notifobj.user_name = User.name;
+        notifobj.head = "#"+User.current_room;
+        notifobj.body = twooshraw;
+        notifobj.timestring = ServerValue.TIMESTAMP;
+        Fref.fref_notifs.push().setValue(notifobj);
+
+//        String hashtags = getHashTags(twooshraw);
+//        try {
+//
+//            jObj.put("twoosh_text", twooshraw);
+//
+//
+//            jObj.put("twoosh_ts", twoosh_ts);
+//            //jObj.put("userid",Integer.toString(thisuser.userid));
+//            jObj.put("user_id", User.userid);
+//            jObj.put("room", User.current_room);
+//            jObj.put("user_name",User.name);
+//            jObj.put("hash_tags", "");
+////            jObj.put("corp_referrer", User.corpid);
+////            jObj.put("corp_auth", User.corp_auth_token);
+//
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+        //wordlistref.push().setValue(roomitem);
+        //wordlistref.child(roomname).setValue(roomitem);
+
+//        Intent i = new Intent(CreatePost.this, RoomDock.class);
+//        startActivity(i);
+       // String resp = publishTwooshRemote(jObj);
+//        if (resp.equals("1")){
 
 
-        String hashtags = getHashTags(twooshraw);
-        try {
 
-            jObj.put("twoosh_text", twooshraw);
-            Date utildate = new Date();
-            String twoosh_ts = Long.toString(utildate.getTime()/1000);
-            jObj.put("twoosh_ts",twoosh_ts);
-            //jObj.put("userid",Integer.toString(thisuser.userid));
-            jObj.put("user_id", User.userid);
-            jObj.put("room", User.current_room);
-            jObj.put("user_name",User.name);
-            jObj.put("hash_tags", "");
-            jObj.put("corp_referrer", User.corpid);
-            jObj.put("corp_auth", User.corp_auth_token);
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        String resp = publishTwooshRemote(jObj);
-        if (resp.equals("1")){
-
-            Intent i = new Intent(CreatePost.this, RoomDock.class);
-            startActivity(i);
-
-        }
+//        }
 //        serversocket.emit("twooosher",jObj.toString());
 //        persistTwooshRemote(jObj);
 //        persistTwooshLocal(jObj);
@@ -197,13 +242,17 @@ public class CreatePost extends AppCompatActivity {
                                 .setAction("Action", null).show();
                     }else{
 
-                        if(User.access_token.equals("")){
+                        if(User.f_access_token.equals("")){
                             User.pending_twoosh = twooshraw;
                             Intent signup = new Intent(CreatePost.this, Signup.class);
                             startActivity(signup);
                         }else{
                             performTwoosh(twooshraw);
                             twoosh.setText("");
+                            finish();
+                            finishActivity(1);
+//                            Intent afterpost = new Intent(CreatePost.this, RoomDock.class);
+//                            startActivity(afterpost);
                         }
 
                     }

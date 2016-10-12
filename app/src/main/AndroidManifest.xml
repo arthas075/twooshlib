@@ -19,19 +19,18 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".TwooshDock">
-
-        </activity>
-        <activity
-            android:name=".RoomDock"
-            android:label="@string/title_activity_room_dock" >
-
-
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".RoomDock"
+            android:label="@string/title_activity_room_dock">
+
+
+
         </activity>
         <activity
             android:name=".CreatePost"
@@ -65,7 +64,12 @@
         <service
             android:name=".services.FService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
+
+        <activity android:name=".Signup2"
+            android:label="@string/title_activity_user_profile" >
+
+        </activity>
     </application>
 
 </manifest>

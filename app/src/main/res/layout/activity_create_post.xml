@@ -42,7 +42,7 @@
                     android:textCursorDrawable="@null"
                     android:padding="10dp"
                     android:id="@+id/twoosh_edittext_main"
-                    android:hint="Ask a question, start a live discussion..."/>
+                    android:hint="What's up ? (max 140 characters)"/>
 
             </LinearLayout>
 

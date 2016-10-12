@@ -1,5 +1,7 @@
 package lib.twoosh.twooshlib.models;
 
+import org.json.JSONObject;
+
 /**
  * Created by arthas on 28/8/16.
  */
@@ -11,7 +13,7 @@ public class User {
 
     public static String corp_token = "";
     public static String corp_secret = "";
-
+    public static long mobilelong = -1;
 
     public static String name = "";
     public static String email = "";
@@ -43,6 +45,9 @@ public class User {
 
     // Company details
     public static String corp_auth_token = "";
+    public static JSONObject twoosh_user_prefs = null;
+    public static String otp_verified = "0";
+    public static boolean user_recognized = false;
 
 
 

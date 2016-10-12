@@ -59,14 +59,38 @@
                 android:textColor="#505050"
                 android:layout_alignParentLeft="true"/>
 
+
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/chatreplieshead"
+                android:text="Replies : "
+                android:textSize="9dp"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@id/userid1"
+                android:textColor="#505050"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/chatreplies"
-                android:text="Replies : 0"
+                android:text="0"
                 android:textSize="9dp"
                 android:layout_marginLeft="5dp"
-                android:layout_toRightOf="@id/userid1"
+                android:layout_toRightOf="@id/chatreplieshead"
+                android:textColor="#505050"/>
+
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/distinctusershead"
+                android:text="Following : "
+                android:textSize="9dp"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@id/chatreplies"
                 android:textColor="#505050"/>
 
 
@@ -74,12 +98,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/distinctusers"
-                android:text="Following : 0"
+                android:text="0"
                 android:textSize="9dp"
                 android:layout_marginLeft="5dp"
-                android:layout_toRightOf="@id/chatreplies"
+                android:layout_toRightOf="@id/distinctusershead"
                 android:textColor="#505050"/>
-
 
 
 

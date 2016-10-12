@@ -11,17 +11,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent">
 
-    <include layout="@layout/postlistview" />
-    <!--<ViewFlipper-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:id="@+id/postviewflipper">-->
+    <!--<include layout="@layout/postlistview" />-->
+    <ViewFlipper
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/postviewflipper">
+
+        <include layout="@layout/postlistview" />
+        <include layout="@layout/create_new_post" />
 
 
-        <!--<include layout="@layout/create_new_post" />-->
-        <!--<include layout="@layout/postlistview" />-->
-
-    <!--</ViewFlipper>-->
+    </ViewFlipper>
     <!--<TextView-->
         <!--android:id="@+id/textView1"-->
         <!--android:layout_width="wrap_content"-->
@@ -38,13 +38,6 @@
         <!--android:src="@android:drawable/ic_input_add" />-->
 
     <!--<include layout="@layout/create_new_post" />-->
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        android:src="@android:drawable/ic_menu_edit" />
 
 </android.support.design.widget.CoordinatorLayout>
 <!--</LinearLayout>-->

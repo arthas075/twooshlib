@@ -27,49 +27,53 @@
     <!--</android.support.design.widget.TextInputLayout>-->
     <LinearLayout
         android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/twoosh_icon"/>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:id="@+id/twoosh_enter_name"
+        android:id="@+id/twoosh_brandname"
         android:padding="3dp">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="18dp"
-            android:textColor="@color/twooshblue"
+            android:textAlignment="center"
+            android:textColor="#111"
             android:layout_marginTop="20dp"
+            android:textStyle="bold"
             android:layout_marginLeft="7dp"
-            android:text="Name"/>
+            android:text="Twoosh - You are connected."/>
 
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginLeft="1dp"
-            android:background="@drawable/et_border_gray"
-            android:textCursorDrawable="@null"
-            android:padding="10dp"
-            android:id="@+id/twoosh_user_name"
-            android:hint="Enter your name..."/>
+    </RelativeLayout>
 
-    </LinearLayout>
+
 
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:visibility="visible"
         android:id="@+id/twoosh_enter_mobile"
 
         android:padding="3dp">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="18dp"
-            android:textColor="@color/twooshblue"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="7dp"
-            android:text="Mobile"/>
+        <!--<TextView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:textSize="18dp"-->
+            <!--android:textColor="@color/twooshblue"-->
+            <!--android:layout_marginTop="20dp"-->
+            <!--android:layout_marginLeft="7dp"-->
+            <!--android:text="Mobile"/>-->
 
         <EditText
             android:layout_width="match_parent"
@@ -83,35 +87,7 @@
 
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:id="@+id/twoosh_enter_pwd"
 
-        android:padding="3dp">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="18dp"
-            android:textColor="@color/twooshblue"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="7dp"
-            android:text="Choose a password..."/>
-
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginLeft="1dp"
-            android:background="@drawable/et_border_gray"
-
-            android:padding="10dp"
-            android:password="true"
-            android:id="@+id/twoosh_user_password"
-            android:hint="Choose a password"/>
-
-    </LinearLayout>
 
 
 

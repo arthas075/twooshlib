@@ -43,6 +43,7 @@ import lib.twoosh.twooshlib.RoomDock;
 import lib.twoosh.twooshlib.TwooshDock;
 import lib.twoosh.twooshlib.adapters.PostListAdapter;
 import lib.twoosh.twooshlib.adapters.RoomListAdapter;
+import lib.twoosh.twooshlib.models.Fref;
 import lib.twoosh.twooshlib.models.PostListItem;
 import lib.twoosh.twooshlib.models.RoomListItem;
 import lib.twoosh.twooshlib.models.User;
@@ -92,18 +93,24 @@ public class PostFragment extends Fragment {
     public void initActivity(){
 
 
+//        ViewFlipper vf = (ViewFlipper)getView().findViewById(R.id.postviewflipper);
+//        vf.showNext();
+
         adapter = new PostListAdapter();
         ListView list=(ListView)getView().findViewById(R.id.postList);
         list.setAdapter(adapter);
 
-        setFirebase();
+        if(User.user_recognized){
+            setFirebaseListeners();
+        }
 
 
-           getPostsRemote();
+
+        //getPostsRemote();
 
     }
 
-    public void setFirebase(){
+    public void setFirebaseListeners(){
 
 //
 //        postref = new Firebase("https://twooshapp-763a4.firebaseio.com");
@@ -111,70 +118,74 @@ public class PostFragment extends Fragment {
 //        postref = postref.child(User.corpid).child(User.current_room).child("posts");
 //
 //        postref.keepSynced(true);
-//
-//
-//        postref.addChildEventListener(new ChildEventListener() {
-//            @Override
-//            public void onChildAdded(DataSnapshot snapshot, String previousChild) {
-//                System.out.println("The " + snapshot.getKey() + " dinosaur's score is " + snapshot.getValue());
-//                postcount = postcount+1;
-//                PostListItem post_local = snapshot.getValue(PostListItem.class);
-//                Toast.makeText(getActivity(), "Total local objects - " + snapshot.getChildrenCount(), Toast.LENGTH_SHORT).show();
-//                adapter.add(post_local);
-//                if (postcount==1){
+
+        Fref.fref_base.keepSynced(true);
+        Fref.fref_base.child(User.current_room).keepSynced(true);
+        Fref.fref_base.child(User.current_room).addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot snapshot, String previousChild) {
+
+
+                System.out.println("The " + snapshot.getKey() + " dinosaur's score is " + snapshot.getValue());
+                postcount = postcount+1;
+                PostListItem post_local = snapshot.getValue(PostListItem.class);
+                //Toast.makeText(getActivity(), "Total local objects - " + snapshot.getChildrenCount(), Toast.LENGTH_SHORT).show();
+                adapter.add(post_local);
+
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
+
+        Fref.fref_base.child(User.current_room).addListenerForSingleValueEvent(new ValueEventListener() {
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                System.out.println("We're done loading the initial " + dataSnapshot.getChildrenCount() + " items");
+                adapter.notifyDataSetChanged();
+//                Toast.makeText(getApplicationContext(), "Add data change called ", Toast.LENGTH_SHORT).show();
+            }
+
+            public void onCancelled(FirebaseError firebaseError) {
+            }
+        });
+
+        Fref.fref_base.child(User.current_room).addValueEventListener(new ValueEventListener() {
+           @Override
+           public void onDataChange(DataSnapshot snapshot) {
+               System.out.println(snapshot.getValue());
+               adapter.notifyDataSetChanged();
+//               if (postcount>1){
+//                   ViewFlipper vf = (ViewFlipper)getView().findViewById(R.id.postviewflipper);
+//                   vf.showNext();
+//               }
+//                if(adapter.getCount()>0){
 //                    ViewFlipper vf = (ViewFlipper)getView().findViewById(R.id.postviewflipper);
 //                    vf.showNext();
 //                }
-//            }
-//
-//            @Override
-//            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-//
-//            }
-//
-//            @Override
-//            public void onChildRemoved(DataSnapshot dataSnapshot) {
-//
-//            }
-//
-//            @Override
-//            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(FirebaseError firebaseError) {
-//
-//            }
-//        });
-////
-////        wordlistref.addListenerForSingleValueEvent(new ValueEventListener() {
-////            public void onDataChange(DataSnapshot dataSnapshot) {
-////                System.out.println("We're done loading the initial " + dataSnapshot.getChildrenCount() + " items");
-////                adapter.notifyDataSetChanged();
-////                Toast.makeText(getApplicationContext(), "Add data change called ", Toast.LENGTH_SHORT).show();
-////            }
-////
-////            public void onCancelled(FirebaseError firebaseError) {
-////            }
-////        });
-//
-//        postref.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot snapshot) {
-//                System.out.println(snapshot.getValue());
-//                adapter.notifyDataSetChanged();
-////                if(adapter.getCount()>0){
-////                    ViewFlipper vf = (ViewFlipper)getView().findViewById(R.id.postviewflipper);
-////                    vf.showNext();
-////                }
-//            }
-//
-//            @Override
-//            public void onCancelled(FirebaseError firebaseError) {
-//                System.out.println("The read failed: " + firebaseError.getMessage());
-//            }
-//        });
+           }
+
+           @Override
+           public void onCancelled(FirebaseError firebaseError) {
+               System.out.println("The read failed: " + firebaseError.getMessage());
+           }
+       });
 
     }
 
@@ -258,7 +269,7 @@ public class PostFragment extends Fragment {
 
 
                 //public PostListItem(String twoosh_text,String twoosh_id, String user_name,String user_count,String replies_count, String online_count, String time )
-                postitem = new PostListItem(twoosh_text,twoosh_id, user_name,users_count,replies_count, online_count,display_time);
+                postitem = new PostListItem(twoosh_text,twoosh_id, user_name,User.userid,users_count,replies_count, online_count,display_time);
                 //postref.child(twoosh_id).setValue(postitem);
                 adapter.add(postitem);
             } catch (JSONException e) {
@@ -285,20 +296,20 @@ public class PostFragment extends Fragment {
     }
     public void attachListeners(){
 
-//        Button askq_btn=(Button)getView().findViewById(R.id.askqbtn);
-//
-//
-//       askq_btn.setOnClickListener(new View.OnClickListener() {
-//           @Override
-//           public void onClick(View v) {
-//
-//               Toast.makeText(getActivity(), "Wanna create a new post ??", Toast.LENGTH_SHORT).show();
-//               Intent i = new Intent(getActivity(), CreatePost.class);
-//               startActivity(i);
-//
-//
-//           }
-//       });
+        Button askq_btn=(Button)getView().findViewById(R.id.askqbtn);
+
+
+       askq_btn.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+
+               Toast.makeText(getActivity(), "Wanna create a new post ??", Toast.LENGTH_SHORT).show();
+               Intent i = new Intent(getActivity(), CreatePost.class);
+               startActivity(i);
+
+
+           }
+       });
 
         FloatingActionButton fab = (FloatingActionButton)getView().findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {

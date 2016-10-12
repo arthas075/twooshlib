@@ -1,41 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+
+<android.support.design.widget.CoordinatorLayout
+    android:id="@+id/postlists"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="lib.twoosh.twooshlib.RoomDock">
+    android:layout_height="match_parent">
 
-    <!--<android.support.design.widget.TabLayout-->
-        <!--android:id="@+id/tab_layout"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="?attr/actionBarSize"-->
-        <!--android:layout_below="@+id/toolbar"-->
-        <!--android:background="?attr/colorPrimary"-->
-        <!--android:elevation="0dp"-->
-        <!--android:minHeight="?attr/actionBarSize"-->
-        <!--android:maxHeight="?attr/actionBarSize
-        android:layout_marginTop="?attr/actionBarSize""-->
-        <!--android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>-->
 
-    <android.support.v4.view.ViewPager
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/roomdock_pager"
-
+    <ListView
+        android:id="@+id/postList"
         android:layout_width="match_parent"
-        android:layout_height="fill_parent" />
-    <!--<TextView-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:textSize="23dp"-->
-    <!--android:textColor="#3399ff"-->
-    <!--android:layout_marginTop="20dp"-->
-    <!--android:layout_marginLeft="7dp"-->
-    <!--android:text="Twoosh - You are connected."/>-->
-    <!--<fragment-->
-        <!--android:name="lib.twoosh.twooshlib.fragments.PostFragment"-->
-        <!--android:id="@+id/poFragment"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content" />-->
+        android:layout_height="wrap_content"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="2dp"
+        xmlns:android="http://schemas.android.com/apk/res/android">
 
 
-</RelativeLayout>
+    </ListView>
+
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@android:drawable/ic_menu_edit" />
+
+</android.support.design.widget.CoordinatorLayout>

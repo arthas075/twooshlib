@@ -23,7 +23,7 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Ask a Question"
+            android:text="Start a Live Chat"
             android:id="@+id/askqbtn"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
@@ -40,7 +40,7 @@
         android:id="@+id/online_count"
         android:gravity="center_horizontal"
         android:layout_marginTop="40dp"
-        android:text="People Targeted : 2"/>
+        android:text="People Targeted : N"/>
 
 
         <TextView

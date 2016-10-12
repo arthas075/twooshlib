@@ -21,29 +21,43 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.Toast;
 
 import com.firebase.client.AuthData;
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.firebase.client.Query;
 import com.firebase.client.ValueEventListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import lib.twoosh.twooshlib.adapters.PostListAdapter;
 import lib.twoosh.twooshlib.constants.AppConstants;
 import lib.twoosh.twooshlib.fragments.PeopleFragment;
 import lib.twoosh.twooshlib.fragments.PostFragment;
+import lib.twoosh.twooshlib.interfaces.Callbacker;
+import lib.twoosh.twooshlib.models.Fref;
+import lib.twoosh.twooshlib.models.PostListItem;
+import lib.twoosh.twooshlib.models.PostListItemTs;
+import lib.twoosh.twooshlib.models.Prefs;
 import lib.twoosh.twooshlib.models.User;
 import lib.twoosh.twooshlib.networks.HttpClient;
+import lib.twoosh.twooshlib.notifs.NotifObjTs;
 import lib.twoosh.twooshlib.notifs.Notifs;
+import lib.twoosh.twooshlib.services.FService;
 
-public class RoomDock extends AppCompatActivity {
+public class RoomDock extends AppCompatActivity implements Callbacker{
 
     private ViewPager rdPager;
     private PagerAdapter rdPagerAdapter;
+    PostListAdapter adapter ;
     private static final int NUM_PAGES = 1;
     int postcount = 0;
 
@@ -55,109 +69,170 @@ public class RoomDock extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_room_dock);
+        //setContentView(R.layout.content_post_fragment);
 
-
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
-
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
-
-        Intent i = getIntent();
-        String tag_name = i.getStringExtra("tag_name");
-        String tag_id = i.getStringExtra("tag_id");
-        User.current_room = tag_id;
-        this.getSupportActionBar().setTitle(tag_name);
-        this.getSupportActionBar().setSubtitle("Twoosh - You are connected.");
-
-
-
-//        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-//        tabLayout.addTab(tabLayout.newTab().setText("Posts"));
-//        tabLayout.addTab(tabLayout.newTab().setText("People"));
-//
-//        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-
-        rdPager = (ViewPager) findViewById(R.id.roomdock_pager);
-        rdPagerAdapter = new RoomDockPagerAdapter(getSupportFragmentManager());
-        rdPager.setAdapter(rdPagerAdapter);
-
-
-        //rdPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-//        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-//            @Override
-//            public void onTabSelected(TabLayout.Tab tab) {
-//               //rdPager.setCurrentItem(tab.getPosition());
-//                int position = tab.getPosition();
-//                rdPager.setCurrentItem(tab.getPosition());
-//            }
-//
-//            @Override
-//            public void onTabUnselected(TabLayout.Tab tab) {
-//
-//            }
-//
-//            @Override
-//            public void onTabReselected(TabLayout.Tab tab) {
-//
-//            }
-//        });
 
         initActivity();
+        setAdapters();
 
-//        ImageView askaq = (ImageView)findViewById(R.id.askaq);
-//        //ImageView askaq = getResources().
-//        Animation pulse = AnimationUtils.loadAnimation(this, R.anim.pulse);
-//        askaq.startAnimation(pulse);
 
-//        ObjectAnimator scaleDown = ObjectAnimator.ofPropertyValuesHolder(askaq,
-//                PropertyValuesHolder.ofFloat("scaleX", 1.2f),
-//                PropertyValuesHolder.ofFloat("scaleY", 1.2f));
-//        scaleDown.setDuration(310);
-//
-//        scaleDown.setRepeatCount(ObjectAnimator.INFINITE);
-//        scaleDown.setRepeatMode(ObjectAnimator.REVERSE);
-//
-//        scaleDown.start();
 
     }
+
+
 
     public void initActivity(){
 
-        initFirebase();
+        //getApplicationContext().getSharedPreferences("info.twoosh.TwooshUserPref", 0).edit().clear().commit();
+        Intent i = getIntent();
+        String room = i.getStringExtra("room");
+        User.current_room = room;
+        FService.roomdockactive = true;
+        // touch User
+        touchUser();
+
+
+
+
+        this.getSupportActionBar().setSubtitle("#everything");
+//        this.getSupportActionBar().setSubtitle("Twoosh - You are connected.");
+
+       // initFirebase();
 
     }
-    private class RoomDockPagerAdapter extends FragmentStatePagerAdapter {
-        public RoomDockPagerAdapter(FragmentManager fm) {
-            super(fm);
+
+    public void touchUser(){
+
+        Prefs prefs = new Prefs(getApplicationContext());
+        if(prefs.prefExists()){
+
+            FService.caller = this;
+
+            //Fref.fref_base = new Firebase("https://twooshapp-763a4.firebaseio.com");
+            if(!FService.isRunning){
+                Intent fservice = new Intent(getApplicationContext(), FService.class);
+                fservice.putExtra("payload","1");
+                startService(fservice);
+            }
+            initApp();
+
+
+
+        }else{
+            showLoginScreen();
         }
+    }
 
-        @Override
-        public Fragment getItem(int position) {
-            switch(position){
+    public void showLoginScreen(){
 
-                case 0:
-                    return new PostFragment();
-//                case 1:
-//                    return new PeopleFragment();
-                default:
-                    return null;
+        Intent i = new Intent(this, Signup.class);
+        startActivity(i);
+
+    }
+    public void setAdapters(){
+
+
+        adapter = new PostListAdapter();
+        ListView list=(ListView)findViewById(R.id.postList);
+        list.setAdapter(adapter);
+        attachListeners();
+
+
+
+
+    }
+
+    public void initApp(){
+
+        // put this function in launcher activity
+
+        System.out.println("Firebase auth success callback");
+        setAdapters();
+        setRoomListener();
+
+    }
+    @Override
+    public void callback(String data){
+
+
+
+       // setRoomListener();
+
+    }
+
+    public void setRoomListener(){
+
+
+        this.fref = Fref.fref_base.child(User.current_room);
+        this.fref.keepSynced(true);
+        Query orderedposts = this.fref.orderByChild("timestring");
+        orderedposts.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot snapshot, String previousChild) {
+
+
+                System.out.println("The " + snapshot.getKey() + " dinosaur's score is " + snapshot.getValue());
+//                postcount = postcount+1;
+                PostListItemTs plo = snapshot.getValue(PostListItemTs.class);
+                PostListItem pl = new PostListItem(plo.twoosh_text,plo.twoosh_id,plo.user_name,plo.user_id,plo.users_count,plo.replies_count,plo.online_count,plo.twoosh_time);
+                adapter.add(pl);
 
             }
 
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
 
-        }
+            }
 
-        @Override
-        public int getCount() {
-            return NUM_PAGES;
-        }
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
+
+//        this.fref.addListenerForSingleValueEvent(new ValueEventListener() {
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                System.out.println("We're done loading the initial " + dataSnapshot.getChildrenCount() + " items");
+//                adapter.notifyDataSetChanged();
+////                Toast.makeText(getApplicationContext(), "Add data change called ", Toast.LENGTH_SHORT).show();
+//            }
+//
+//            public void onCancelled(FirebaseError firebaseError) {
+//            }
+//        });
+
+        orderedposts.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                System.out.println(snapshot.getValue());
+                for (DataSnapshot postSnapshot: snapshot.getChildren()) {
+                    PostListItemTs plo = postSnapshot.getValue(PostListItemTs.class);
+                    PostListItem pl = new PostListItem(plo.twoosh_text,plo.twoosh_id,plo.user_name,plo.user_id,plo.users_count,plo.replies_count,plo.online_count,plo.twoosh_time);
+                    System.out.print(snapshot);
+                    //adapter.add(po);
+                    //Log.e("Get Data", post.<YourMethod>());
+                }
+                adapter.notifyDataSetChanged();
+
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                System.out.println("The read failed: " + firebaseError.getMessage());
+            }
+        });
+
+
     }
 
     @Override
@@ -182,167 +257,71 @@ public class RoomDock extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void initFirebase(){
-
-//        c = getBaseContext();
-        Firebase.setAndroidContext(getApplicationContext());
-        Firebase.getDefaultConfig().setPersistenceEnabled(true);
-        fref = new Firebase("https://twooshapp-763a4.firebaseio.com");
-        fref = fref.child("posts");
-        fref.keepSynced(true);
 
 
-        getFirebaseAuth();
+    public void attachListeners(){
 
-        // set authentication handlers
-        // Create a handler to handle the result of the authentication
-        authResultHandler = new Firebase.AuthResultHandler() {
-            @Override
-            public void onAuthenticated(AuthData authData) {
-                // Authenticated successfully with payload authData
-               // showToastMsg("User authenticated...");
-//                JSONObject notification_payload = new JSONObject();
-//                try{
-//                    notification_payload.put("head","Twoosh - You are connected");
-//                    notification_payload.put("body","Firebase authentication successfull");
-//                }
-//                catch (Exception e){
+//        Button askq_btn=(Button)findViewById(R.id.askqbtn);
 //
-//                }
-//                Notifs notify = new Notifs();
-//                notify.notify(getApplicationContext(), notification_payload);
-               System.out.println("The read failed: " );
-            }
+//
+//        askq_btn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//
+//                Intent i = new Intent(RoomDock.this, CreatePost.class);
+//                startActivity(i);
+//
+//
+//            }
+//        });
+
+        FloatingActionButton fab = (FloatingActionButton)findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onAuthenticationError(FirebaseError firebaseError) {
-                // Authenticated failed with error firebaseError
-               // showToastMsg("User authenticated failed...");
-                System.out.println("The read failed: " );
-                getFirebaseAuth();
-            }
-        };
-        //User.f_access_token = "eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCJ9.eyJ2IjowLCJkIjp7InVpZCI6ImprbWMifSwiaWF0IjoxNDc0OTE4NjAwfQ.njvr9yUzyaPBGIez2h1wdH-yPm_unyyhYXeYuVw43wo";
-        ///showToastMsg("FAcess token - " + User.f_access_token);
-        //fref.authWithCustomToken(User.f_access_token, authResultHandler);
-
-
-        // set child event handlers
-        fref.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot snapshot, String previousChild) {
-                // System.out.println("The " + snapshot.getKey() + " dinosaur's score is " + snapshot.getValue());
-                //showToastMsg("Fservice addChildEventListener - ");
-
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-                System.out.println("The " + dataSnapshot.getKey() + " dinosaur's score is " + dataSnapshot.getValue());
-                //showToastMsg("Fservice addChildEventListener - ");
-                JSONObject notification_payload = new JSONObject();
-                try{
-                    notification_payload.put("head","Twoosh - You are connected.");
-                    notification_payload.put("body","Chat msg");
-                }
-                catch (Exception e){
-
-                }
-                Notifs notify = new Notifs();
-                notify.notify(getApplicationContext(), notification_payload);
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-
+            public void onClick(View view) {
+//                POSTkbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+                Intent intent = new Intent(RoomDock.this,CreatePost.class);
+                startActivity(intent);
             }
         });
 
-
-
-
-        // set add value event handlers
-        fref.addValueEventListener(new ValueEventListener() {
+        ListView list=(ListView)findViewById(R.id.postList);
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                // System.out.println(snapshot.getValue());
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-//                String key = snapshot.getKey();
-//                DataSnapshot d = snapshot.child(key);
-//                ChatListItem post = d.getValue(ChatListItem.class);
-//
-//                showToastMsg("Fservice onaddvalueEVent - ");
-//                JSONObject notification_payload = new JSONObject();
-//                try{
-//                    notification_payload.put("head","Twoosh - You are connected.");
-//                    notification_payload.put("body","Chat msg");
-//                }
-//                catch (Exception e){
-//
-//                }
-//                Notifs notify = new Notifs();
-//                notify.notify(getApplicationContext(), notification_payload);
+                PostListItem m = (PostListItem) parent.getAdapter().getItem(position);
+                //TagListItem m = (TagListItem)view.getTag(R.id.tagList);
+                //Toast.makeText(TwooshDock.this, m.tagdesc, Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(RoomDock.this, Chatbox.class);
+                intent.putExtra("twoosh_text", m.twoosh_text);
+                intent.putExtra("twoosh_id", m.twoosh_id);
+                intent.putExtra("username", m.user_name);
+                intent.putExtra("user_id", m.user_id);
+                intent.putExtra("replies", "0");
+
+                intent.putExtra("following", "0");
+                intent.putExtra("twoosh_time", m.twoosh_time);
+
+
+                // intent.putExtra("tagname", m.tagname);
+                startActivity(intent);
             }
-            //
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-                System.out.println("The read failed: " + firebaseError.getMessage());
-            }
+
+
         });
+
 
     }
 
+    @Override
+    public void onDestroy(){
 
-    public void getFirebaseAuth(){
-        HttpClient httpClient = new HttpClient(new HttpClient.GetBack(){
-
-            @Override
-            public void onResponse(String response) {
-
-                try {
-
-                    //Toast.makeText(TwooshDock.this, response, Toast.LENGTH_SHORT).show();
-                    JSONObject roomlist_response = new JSONObject(response);
-                    if(roomlist_response.getString("status").equals("Success") && (roomlist_response.getString("response").length()>0)){
-                        User.f_access_token = roomlist_response.getString("response");
-                        fref.authWithCustomToken(User.f_access_token, authResultHandler);
-                    }
-
-
-                } catch (JSONException e) {
-                    //Toast.makeText(TwooshDock.this, e.toString(), Toast.LENGTH_SHORT).show();
-                    e.printStackTrace();
-                }
-            }
-        });
-
-
-
-        String host = AppConstants.localhost;
-        String getroomsapi = AppConstants.getfaccessapi;
-        //String host = getResources().getString(R.string.local_host);
-        //String getroomsapi = getResources().getString(R.string.getfaccessapi);
-        String getroomsurl = host+getroomsapi;
-
-        String urlparams;
-
-       // showToastMsg("User access token before auth - "+User.access_token);
-        urlparams = "{\"access_token\":\""+User.access_token+"\"}";
-        httpClient.Get(RoomDock.this, getroomsurl, urlparams);
-
-
-
+        FService.roomdockactive = false;
+        Toast.makeText(getApplicationContext(), "Room Dock destroyed...", Toast.LENGTH_SHORT).show();
+        super.onDestroy();
     }
 
 }

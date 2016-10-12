@@ -107,7 +107,9 @@ public class PostListAdapter extends BaseAdapter {
     }
     @Override
     public PostListItem getItem(int position) {
-        return twooshpostlist.get(position);
+
+
+        return twooshpostlist.get(getCount() - position - 1);
     }
 
     @Override
