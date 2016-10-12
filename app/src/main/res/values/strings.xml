@@ -6,10 +6,10 @@
     <string name="title_activity_test">TestActivity</string>
 
 
-    <string name="local_host">http://192.168.0.109:8001</string>
+    <string name="local_host">http://192.168.0.107:8001</string>
     <string name="remote_host">http://twoosh.info:8001</string>
 
-    <string name="local_host_socket">http://192.168.0.109:8000</string>
+    <string name="local_host_socket">http://192.168.0.107:8000</string>
     <string name="remote_host_socket">http://twoosh.info:8000</string>
 
 

@@ -71,10 +71,6 @@ public class Chatbox extends AppCompatActivity {
         getSupportActionBar().setTitle("Twoosh Chatbox");
 
         Intent i = getIntent();
-//        intent.putExtra("twoosh_text",m.twoosh_text);
-//        intent.putExtra("twoosh_id", m.twoosh_id);
-//        intent.putExtra("username", m.user_name);
-//        intent.putExtra("user_id", m.user_id);
 
         String twooshtext = i.getStringExtra("twoosh_text");
         String twooshid = i.getStringExtra("twoosh_id");
@@ -158,14 +154,7 @@ public class Chatbox extends AppCompatActivity {
                 ChatListItem m = new ChatListItem(chat_id, chat_msg, from, chat_unix, "123213");
                 chatboxAdapter.add(m);
 
-//                for (DataSnapshot postSnapshot: snapshot.getChildren()) {
-//                    ChatListItem post = postSnapshot.getValue(ChatListItem.class);
-//                    chatboxAdapter.add(post);
-//                }
-                //postchatref.child(chatid).setValue(newchat);
-
-                //Toast.makeText(Chatbox.this, "Total local objects - " + snapshot.getChildrenCount(), Toast.LENGTH_SHORT).show();
-
+//
 
             }
 
@@ -197,10 +186,7 @@ public class Chatbox extends AppCompatActivity {
             public void onDataChange(DataSnapshot snapshot) {
                 System.out.println(snapshot.getValue());
 
-//                String key = snapshot.getKey();
-//                DataSnapshot d = snapshot.child(key);
-//                ChatListItem post = d.getValue(ChatListItem.class);
-//
+
                 chatboxAdapter.notifyDataSetChanged();
 //                chatLayoutManager.setStackFromEnd(true);
                 chatRecyclerView.scrollToPosition(chatboxAdapter.getItemCount() - 1);
@@ -215,12 +201,9 @@ public class Chatbox extends AppCompatActivity {
                 Notifs notify = new Notifs();
                 notify.notify(getApplicationContext(), notification_payload);
 
-//                if(adapter.getCount()>0){
-//                    ViewFlipper vf = (ViewFlipper)getView().findViewById(R.id.postviewflipper);
-//                    vf.showNext();
-//                }
+
             }
-//
+
             @Override
             public void onCancelled(FirebaseError firebaseError) {
                 System.out.println("The read failed: " + firebaseError.getMessage());
@@ -242,9 +225,6 @@ public class Chatbox extends AppCompatActivity {
                 getFirebaseAuth();
             }
         };
-        // Authenticate users with a custom Firebase token
-        //postchatref.authWithCustomToken("eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCJ9.eyJ2IjowLCJkIjp7InVpZCI6ImprbWMifSwiaWF0IjoxNDc0ODI1NjQ1fQ.5nhN_zfC2Wc9N6d4x1siBwr1_m8RQ7H69-GgYukLSfw", authResultHandler);
-
 
     }
 
@@ -257,7 +237,7 @@ public class Chatbox extends AppCompatActivity {
 
                 try {
 
-                    //Toast.makeText(TwooshDock.this, response, Toast.LENGTH_SHORT).show();
+
                     JSONObject roomlist_response = new JSONObject(response);
                     if(roomlist_response.getString("status").equals("Success") && (roomlist_response.getString("response").length()>0)){
                         User.f_access_token = roomlist_response.getString("response");
@@ -266,7 +246,7 @@ public class Chatbox extends AppCompatActivity {
 
 
                 } catch (JSONException e) {
-                    //Toast.makeText(TwooshDock.this, e.toString(), Toast.LENGTH_SHORT).show();
+
                     e.printStackTrace();
                 }
             }
@@ -287,30 +267,6 @@ public class Chatbox extends AppCompatActivity {
 
 
     }
-    public void inflateDummyDataAdapter(){
-
-//        ChatListItem dummychat; //= new ChatListItem("You are all dumbfucks...","Satyam : ","21:23 GMT");
-//        for(int i=0;i<15;i++){
-//            dummychat = new ChatListItem("Chat - "+i,"Satyam : ","21:23 GMT");
-//            chatboxAdapter.add(dummychat);
-//        }
-//
-//        dummychat = new ChatListItem("Last Chat Item...","Satyam : ","21:23 GMT");
-//        chatboxAdapter.add(dummychat);
-//       // chatRecyclerView.scrollToPosition(11);
-//        chatboxAdapter.notifyDataSetChanged();
-//        chatLayoutManager.scrollToPosition(0);
-
-       // chatLayoutManager.setStackFromEnd(true);
-        //chatLayoutManager.scrollToPosition(9);
-       // chatRecyclerView.smoothScrollToPosition(10);
-//        nestedScrollView.scrollTo(0, nestedScrollView.getBottom());
-//        nestedScrollView.fullScroll(View.FOCUS_DOWN);
-       // chatRecyclerView.
-
-
-    }
-
 
 
     public void attachListeners(){
@@ -341,40 +297,14 @@ public class Chatbox extends AppCompatActivity {
 
     public void sendChatMsg(String chat_text){
 
-        // append ui
 
-
-        //public ChatListItem(String chatid, String chatmsg, String chatfrom,String chattime, String twooshpostid)
         long unixTime = System.currentTimeMillis() / 1000L;
         String chatid = this.twoosh_id+unixTime;
         ChatListItem newchat = new ChatListItem(chatid, chat_text, User.name, "00:00 GMT", this.twoosh_id);
-        //chatboxAdapter.add(newchat);
-
-
-        // push socket
-
-
-        // push api
-
-
-        // save firebase
-        // seconds timestamp is 10 digits long
-
-
-
-
-
-        //chatboxAdapter.notifyDataSetChanged();
 
         int count = chatboxAdapter.getItemCount();
-
-
-       // chatLayoutManager.scrollToPosition(chatboxAdapter.getItemCount());
         chatLayoutManager.setStackFromEnd(true);
         chatRecyclerView.scrollToPosition(chatboxAdapter.getItemCount() - 1);
-
-
-
         postchatref.child(chatid).setValue(newchat);
 
         JSONObject notification_payload = new JSONObject();

@@ -6,6 +6,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="invisible"
         android:background="#f1f1f1"
        >
         <TextView
@@ -28,7 +29,7 @@
             android:layout_weight="1"
             android:id="@+id/chat_msg"
 
-            android:hint=" type here to reply..."
+            android:hint=" Type here to reply..."
             android:background="@drawable/et_border_orange"
             android:layout_height="match_parent" />
 

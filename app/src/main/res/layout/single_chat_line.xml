@@ -45,18 +45,20 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="8dp"
+                android:paddingLeft="5dp"
                 android:text="You : "
-                android:textColor="#c0c0c0" />
+                android:textColor="#909090" />
 
             <TextView
                 android:id="@+id/chatTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingLeft="5dp"
                 android:textSize="8dp"
                 android:layout_gravity="right"
                 android:text="00:00 GMT"
                 android:layout_alignParentRight="true"
-                android:textColor="#c0c0c0" />
+                android:textColor="#909090" />
 
         </LinearLayout>
 

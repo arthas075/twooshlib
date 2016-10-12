@@ -51,6 +51,7 @@ import lib.twoosh.twooshlib.models.User;
 import lib.twoosh.twooshlib.networks.HttpClient;
 import lib.twoosh.twooshlib.notifs.NotifObjTs;
 import lib.twoosh.twooshlib.notifs.Notifs;
+import lib.twoosh.twooshlib.notifs.Toasts;
 import lib.twoosh.twooshlib.services.FService;
 
 public class RoomDock extends AppCompatActivity implements Callbacker{
@@ -69,7 +70,6 @@ public class RoomDock extends AppCompatActivity implements Callbacker{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_room_dock);
-        //setContentView(R.layout.content_post_fragment);
 
 
         initActivity();
@@ -97,7 +97,7 @@ public class RoomDock extends AppCompatActivity implements Callbacker{
         this.getSupportActionBar().setSubtitle("#everything");
 //        this.getSupportActionBar().setSubtitle("Twoosh - You are connected.");
 
-       // initFirebase();
+
 
     }
 
@@ -107,8 +107,6 @@ public class RoomDock extends AppCompatActivity implements Callbacker{
         if(prefs.prefExists()){
 
             FService.caller = this;
-
-            //Fref.fref_base = new Firebase("https://twooshapp-763a4.firebaseio.com");
             if(!FService.isRunning){
                 Intent fservice = new Intent(getApplicationContext(), FService.class);
                 fservice.putExtra("payload","1");
@@ -155,9 +153,6 @@ public class RoomDock extends AppCompatActivity implements Callbacker{
     public void callback(String data){
 
 
-
-       // setRoomListener();
-
     }
 
     public void setRoomListener(){
@@ -172,7 +167,6 @@ public class RoomDock extends AppCompatActivity implements Callbacker{
 
 
                 System.out.println("The " + snapshot.getKey() + " dinosaur's score is " + snapshot.getValue());
-//                postcount = postcount+1;
                 PostListItemTs plo = snapshot.getValue(PostListItemTs.class);
                 PostListItem pl = new PostListItem(plo.twoosh_text,plo.twoosh_id,plo.user_name,plo.user_id,plo.users_count,plo.replies_count,plo.online_count,plo.twoosh_time);
                 adapter.add(pl);
@@ -200,16 +194,7 @@ public class RoomDock extends AppCompatActivity implements Callbacker{
             }
         });
 
-//        this.fref.addListenerForSingleValueEvent(new ValueEventListener() {
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                System.out.println("We're done loading the initial " + dataSnapshot.getChildrenCount() + " items");
-//                adapter.notifyDataSetChanged();
-////                Toast.makeText(getApplicationContext(), "Add data change called ", Toast.LENGTH_SHORT).show();
-//            }
-//
-//            public void onCancelled(FirebaseError firebaseError) {
-//            }
-//        });
+
 
         orderedposts.addValueEventListener(new ValueEventListener() {
             @Override
@@ -218,9 +203,8 @@ public class RoomDock extends AppCompatActivity implements Callbacker{
                 for (DataSnapshot postSnapshot: snapshot.getChildren()) {
                     PostListItemTs plo = postSnapshot.getValue(PostListItemTs.class);
                     PostListItem pl = new PostListItem(plo.twoosh_text,plo.twoosh_id,plo.user_name,plo.user_id,plo.users_count,plo.replies_count,plo.online_count,plo.twoosh_time);
-                    System.out.print(snapshot);
-                    //adapter.add(po);
-                    //Log.e("Get Data", post.<YourMethod>());
+
+
                 }
                 adapter.notifyDataSetChanged();
 
@@ -293,21 +277,16 @@ public class RoomDock extends AppCompatActivity implements Callbacker{
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 PostListItem m = (PostListItem) parent.getAdapter().getItem(position);
-                //TagListItem m = (TagListItem)view.getTag(R.id.tagList);
-                //Toast.makeText(TwooshDock.this, m.tagdesc, Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(RoomDock.this, Chatbox.class);
                 intent.putExtra("twoosh_text", m.twoosh_text);
                 intent.putExtra("twoosh_id", m.twoosh_id);
                 intent.putExtra("username", m.user_name);
                 intent.putExtra("user_id", m.user_id);
                 intent.putExtra("replies", "0");
-
                 intent.putExtra("following", "0");
                 intent.putExtra("twoosh_time", m.twoosh_time);
-
-
-                // intent.putExtra("tagname", m.tagname);
                 startActivity(intent);
+
             }
 
 
@@ -320,7 +299,6 @@ public class RoomDock extends AppCompatActivity implements Callbacker{
     public void onDestroy(){
 
         FService.roomdockactive = false;
-        Toast.makeText(getApplicationContext(), "Room Dock destroyed...", Toast.LENGTH_SHORT).show();
         super.onDestroy();
     }
 

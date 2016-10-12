@@ -88,6 +88,25 @@
     </LinearLayout>
 
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/twoosh_tagline"
+        android:padding="3dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16dp"
+            android:textAlignment="center"
+            android:textColor="#c0c0c0"
+            android:layout_marginTop="0dp"
+            android:textStyle="bold"
+            android:layout_marginLeft="7dp"
+            android:text="Its a Live Information Network."/>
+
+    </RelativeLayout>
 
 
 
