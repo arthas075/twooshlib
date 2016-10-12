@@ -4,11 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.view.NestedScrollingChild;
-import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,12 +40,12 @@ import lib.twoosh.twooshlib.notifs.Notifs;
 
 public class Chatbox extends AppCompatActivity {
 
-    private RecyclerView chatRecyclerView;
+
     private ChatListAdapter chatboxAdapter;
-    private LinearLayoutManager chatLayoutManager;
-    private NestedScrollView nestedScrollView;
+
     static String twoosh_id = "";
     Firebase postchatref = null;
+    ListView chatRecyclerView = null;
     Firebase.AuthResultHandler authResultHandler = null;
 
 
@@ -97,28 +95,9 @@ public class Chatbox extends AppCompatActivity {
 
 
 
-        chatRecyclerView = (RecyclerView) findViewById(R.id.chats_recycler_view);
-        chatRecyclerView.setNestedScrollingEnabled(false);
-
-
-
-        // use this setting to improve performance if you know that changes
-        // in content do not change the layout size of the RecyclerView
-        chatRecyclerView.setHasFixedSize(true);
-
-         //use a linear layout manager
         chatboxAdapter = new ChatListAdapter();
-        chatLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        chatLayoutManager.setStackFromEnd(true);
-
-        chatRecyclerView.setLayoutManager(chatLayoutManager);
+        chatRecyclerView = (ListView)findViewById(R.id.chats_recycler_view);
         chatRecyclerView.setAdapter(chatboxAdapter);
-        //nestedScrollView = (NestedScrollView)findViewById(R.id.chat_nested_scroll);
-
-        // specify an adapter (see also next example)
-
-       // inflateDummyDataAdapter();
-
         setFirebaseForChat();
 
     }
@@ -151,7 +130,7 @@ public class Chatbox extends AppCompatActivity {
 
 
                 //public ChatListItem(String chatid, String chatmsg, String chatfrom,String chattime, String twooshpostid)
-                ChatListItem m = new ChatListItem(chat_id, chat_msg, from, chat_unix, "123213");
+                ChatListItem m = new ChatListItem(chat_id, chat_msg, from, chat_unix, User.current_post);
                 chatboxAdapter.add(m);
 
 //
@@ -188,18 +167,8 @@ public class Chatbox extends AppCompatActivity {
 
 
                 chatboxAdapter.notifyDataSetChanged();
-//                chatLayoutManager.setStackFromEnd(true);
-                chatRecyclerView.scrollToPosition(chatboxAdapter.getItemCount() - 1);
-                JSONObject notification_payload = new JSONObject();
-                try{
-                    notification_payload.put("head","Twoosh - You are connected.");
-                    notification_payload.put("body","Chat msg");
-                }
-                catch (Exception e){
+                chatRecyclerView.smoothScrollToPosition(chatboxAdapter.getCount()-1);
 
-                }
-                Notifs notify = new Notifs();
-                notify.notify(getApplicationContext(), notification_payload);
 
 
             }
@@ -295,31 +264,17 @@ public class Chatbox extends AppCompatActivity {
 
     }
 
-    public void sendChatMsg(String chat_text){
+    public void sendChatMsg(String chat_text) {
 
 
         long unixTime = System.currentTimeMillis() / 1000L;
-        String chatid = this.twoosh_id+unixTime;
+        String chatid = this.twoosh_id + unixTime;
         ChatListItem newchat = new ChatListItem(chatid, chat_text, User.name, "00:00 GMT", this.twoosh_id);
-
-        int count = chatboxAdapter.getItemCount();
-        chatLayoutManager.setStackFromEnd(true);
-        chatRecyclerView.scrollToPosition(chatboxAdapter.getItemCount() - 1);
         postchatref.child(chatid).setValue(newchat);
-
-        JSONObject notification_payload = new JSONObject();
-        try{
-            notification_payload.put("head","New chat msg...");
-            notification_payload.put("body","Twoosh - You are connected.");
-        }
-        catch (Exception e){
-
-        }
-        Notifs notify = new Notifs();
-        notify.notify(getApplicationContext(),notification_payload);
+        int count = chatboxAdapter.getCount();
+        chatRecyclerView.smoothScrollToPosition(count-1);
 
     }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

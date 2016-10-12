@@ -175,7 +175,7 @@ public class VerifyOTP extends AppCompatActivity {
                         //  fref.authWithCustomToken(User.f_access_token, authResultHandler);
                         Prefs.saveUserStatics();
                         // dock.putExtra("work","getaccess");
-                        Intent dock = new Intent(VerifyOTP.this, RoomDock.class);
+                        Intent dock = new Intent(VerifyOTP.this, TwooshDock.class);
                         startActivity(dock);
 
                     }

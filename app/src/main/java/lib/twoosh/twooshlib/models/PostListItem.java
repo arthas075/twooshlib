@@ -29,7 +29,7 @@ public class PostListItem {
         this.twoosh_text = twoosh_text;
         this.twoosh_id = twoosh_id;
         this.user_name = user_name;
-        this.user_id = user_name;
+        this.user_id = user_id;
 
 
         this.users_count = user_count;

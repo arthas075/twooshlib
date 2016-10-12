@@ -2,14 +2,15 @@
     <string name="lib_name">TwooshLib</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_room_dock">Twoosh - You are connected</string>
+    <string name="title_activity_twoosh_dock">Whats going on ?</string>
     <string name="title_activity_post_fragment">PostFragment</string>
     <string name="title_activity_test">TestActivity</string>
 
 
-    <string name="local_host">http://192.168.0.107:8001</string>
+    <string name="local_host">http://twoosh.info</string>
     <string name="remote_host">http://twoosh.info:8001</string>
 
-    <string name="local_host_socket">http://192.168.0.107:8000</string>
+    <string name="local_host_socket">http://twoosh.info:8000</string>
     <string name="remote_host_socket">http://twoosh.info:8000</string>
 
 

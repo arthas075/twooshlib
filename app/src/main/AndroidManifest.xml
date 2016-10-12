@@ -18,7 +18,8 @@
         android:label="Twoosh"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".TwooshDock">
+        <activity android:name=".TwooshDock"
+            android:label="@string/title_activity_twoosh_dock">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -14,15 +14,15 @@
 
     <include layout="@layout/chat_headbox" />
 
-    <android.support.v7.widget.RecyclerView
+    <ListView
         android:id="@+id/chats_recycler_view"
         android:scrollbars="vertical"
         android:background="#fff"
         android:layout_weight="1"
-        app:stackFromEnd="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-    />
+    >
+    </ListView>
 
     <include layout="@layout/chat_replybox" />
 </LinearLayout>
