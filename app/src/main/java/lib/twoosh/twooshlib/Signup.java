@@ -34,6 +34,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import lib.twoosh.twooshlib.models.Prefs;
 import lib.twoosh.twooshlib.models.User;
 import lib.twoosh.twooshlib.networks.HttpClient;
 
@@ -73,6 +74,11 @@ public class Signup extends AppCompatActivity implements LoaderCallbacks<Cursor>
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
+        Prefs prefs = new Prefs(getApplicationContext());
+        if(prefs.prefExists()){
+            Intent todock = new Intent(this,TwooshDock.class);
+            startActivity(todock);
+        }
         // Set up the login form.
 //        mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
 //        populateAutoComplete();
@@ -90,9 +96,39 @@ public class Signup extends AppCompatActivity implements LoaderCallbacks<Cursor>
 //        });
 
         Button signupbtn = (Button) findViewById(R.id.Signup);
+        Button loginbtn = (Button) findViewById(R.id.Login);
         final EditText enter_name = (EditText)findViewById(R.id.twoosh_user_name);
         final EditText enter_mobile = (EditText)findViewById(R.id.twoosh_user_mobile);
         final EditText enter_pwd = (EditText)findViewById(R.id.twoosh_user_password);
+
+        loginbtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                String mobilestr = enter_mobile.getText().toString();
+                if(mobilestr.equals("") || mobilestr.length()<10){
+
+                    Snackbar.make(view, "Please enter 10 digit mobile number", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+//
+                }else{
+
+                    try{
+                        long mobilelong = Long.parseLong(mobilestr);
+                        User.mobile = mobilestr;
+                        User.mobilelong = mobilelong;
+                        User.appname = "Twoosh";
+                        Intent signup2 = new Intent(Signup.this, Login.class);
+                        startActivity(signup2 );
+                    }
+                    catch (Exception e){
+                        Snackbar.make(view, "Please enter valid digits...", Snackbar.LENGTH_LONG)
+                                .setAction("Action", null).show();
+                    }
+                }
+
+            }
+        });
 
 
         signupbtn.setOnClickListener(new OnClickListener() {

@@ -1,11 +1,15 @@
 package lib.twoosh.twooshlib.services;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
+import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 
 import com.firebase.client.AuthData;
@@ -19,10 +23,12 @@ import com.firebase.client.ValueEventListener;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Date;
 import java.util.HashMap;
 
 import lib.twoosh.twooshlib.R;
 import lib.twoosh.twooshlib.RoomDock;
+import lib.twoosh.twooshlib.TwooshDock;
 import lib.twoosh.twooshlib.constants.AppConstants;
 import lib.twoosh.twooshlib.interfaces.Callbacker;
 import lib.twoosh.twooshlib.models.Fref;
@@ -51,7 +57,7 @@ public class FService extends Service {
 
     public FService() {
 
-        showToastMsg("FService constructor called....");
+//        showToastMsg("FService constructor called....");
         //initFirebase();
     }
 
@@ -76,19 +82,22 @@ public class FService extends Service {
 
         showToastMsg("FService on started....");
         this.isRunning = true;
+
         return START_STICKY;
         //return super.onStartCommand(intent, flags, startId);
 
     }
 
-    public void initFirebase(){
+    public void initFirebase() {
 
-        if(authcallback==null){
+        if (authcallback == null) {
+            try{
             Firebase.setAndroidContext(getApplicationContext());
-            Firebase.getDefaultConfig().setPersistenceEnabled(true);
+            Firebase.getDefaultConfig().setPersistenceEnabled(true);}
+            catch(Exception e){}
 
         }
-        if(Fref.fref_base==null){
+        if (Fref.fref_base == null) {
             Fref.fref_base = new Firebase("https://twooshapp-763a4.firebaseio.com");
         }
 
@@ -97,18 +106,8 @@ public class FService extends Service {
             @Override
             public void onAuthenticated(AuthData authData) {
                 // Authenticated successfully with payload authData
-                //showToastMsg("User authenticated...");
-//                JSONObject notification_payload = new JSONObject();
-//                try{
-//                    notification_payload.put("head","Twoosh - You are connected");
-//                    notification_payload.put("body","Firebase authentication successfull");
-//                }
-//                catch (Exception e){
-//
-//                }
-//                Notifs notify = new Notifs();
-//                notify.notify(getApplicationContext(), notification_payload);
-                if(authcallback!=null){
+
+                if (authcallback != null) {
                     authcallback.callback("success");
                 }
 
@@ -116,6 +115,7 @@ public class FService extends Service {
                 //showToastMsg("User authenticated success...");
 
             }
+
             @Override
             public void onAuthenticationError(FirebaseError firebaseError) {
                 // Authenticated failed with error firebaseError
@@ -126,218 +126,86 @@ public class FService extends Service {
         };
 
         Fref.fref_base.authWithCustomToken(User.f_access_token, this.authResultHandler);
-//        frefs.authenticate(c);
-
-
-        //User.f_access_token = "eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCJ9.eyJ2IjowLCJkIjp7InVpZCI6ImprbWMifSwiaWF0IjoxNDc0OTE4NjAwfQ.njvr9yUzyaPBGIez2h1wdH-yPm_unyyhYXeYuVw43wo";
-       // showToastMsg("FAcess token - " + User.f_access_token);
         final Query newnotif = Fref.fref_notifs.orderByChild("timestring").limitToLast(1);
         newnotif.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 System.out.print(dataSnapshot);
                 NotifObjTs notif = null;
-                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
-                     notif= postSnapshot.getValue(NotifObjTs.class);
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    notif = postSnapshot.getValue(NotifObjTs.class);
                     System.out.print(dataSnapshot);
                     //Log.e("Get Data", post.<YourMethod>());
                 }
+                switch (notif.notif_type) {
+                    case "NP":
+                        notifyNewPost(notif);
+                        break;
+                    case "NC":
+                        notifyNewChat(notif);
+                        break;
+                    default:
+                        break;
+                }
 
-                if(!roomdockactive){
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
 
 
 
+    }
+    public void notifyNewPost(NotifObjTs notif){
+
+        try{
+
+
+            if(User.subscribed_rooms.getString(notif.room).equals("1")){
+                if(!roomdockactive && (!User.current_room.equals(notif.room))){
                     JSONObject notification_payload = new JSONObject();
                     try {
                         notification_payload.put("head", notif.head);
                         notification_payload.put("body", notif.body);
                         notification_payload.put("room", notif.room);
+                        notification_payload.put("type", notif.notif_type);
                     } catch (Exception err) {
                         showToastMsg(err.toString());
                     }
                     Notifs notify = new Notifs();
                     notify.notify(c, notification_payload);
                 }
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-
-            }
-        });
-        Fref.fref_notifs.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot snapshot, String previousChild) {
 
 
-//                postcount = postcount+1;
+        }}
+        catch (Exception e){}
+    }
+    public void notifyNewChat(NotifObjTs notif){
 
-//                //Toast.makeText(getActivity(), "Total local objects - " + snapshot.getChildrenCount(), Toast.LENGTH_SHORT).show();
-//                adapter.add(post_local);
+            try {
+            if(User.subscribed_posts.getString(notif.twoosh_id).equals("1")){
+                if(!User.chatboxactive && !User.current_post.equals(notif.twoosh_id)) {
+                    JSONObject notification_payload = new JSONObject();
 
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-
-            }
-        });
-
-
-
-        Fref.fref_notifs.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                System.out.println(snapshot.getValue());
-
-                if(!roomdockactive){
-
-//                    String key = snapshot.getKey();
-//
-//                    Object e = snapshot.getValue();
-//                    HashMap<String, String> map = (HashMap<String, String>) e;
-//                    String head = map.get("head");
-//                    String body = map.get("body");
-//                    String room = map.get("room");
-//                    //NotifObj notif_local = snapshot.getValue(NotifObj.class);
-//
-//
-//                    JSONObject notification_payload = new JSONObject();
-//                    try {
-//                        notification_payload.put("head", head);
-//                        notification_payload.put("body", body);
-//                        notification_payload.put("room", room);
-//                    } catch (Exception err) {
-//                        showToastMsg(err.toString());
-//                    }
-//                    Notifs notify = new Notifs();
-//                    notify.notify(c, notification_payload);
+                    notification_payload.put("head", notif.twoosh_text);
+                    notification_payload.put("body", notif.body);
+                    notification_payload.put("room", notif.room);
+                    notification_payload.put("type", notif.notif_type);
+                    Notifs notify = new Notifs();
+                    notify.notify(c, notification_payload);
                 }
-
-               // notify.notify(c, notification_payload);
-//                System.out.println("The " + snapshot.getKey() + " dinosaur's score is " + snapshot.getValue());
-//                JSONObject notification_payload = new JSONObject();
-//                try {
-//                    notification_payload.put("head", "Twoosh - You are connected");
-//                    notification_payload.put("body", "Addvalueevent notification listener");
-//                } catch (Exception e) {
-//
-//                }
-//                Notifs notify = new Notifs();
-//                notify.notify(c, notification_payload);
-
             }
 
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-                System.out.println("The read failed: " + firebaseError.getMessage());
+
+            } catch (Exception err) {
+                showToastMsg(err.toString());
             }
-        });
-        //fref.authWithCustomToken(User.f_access_token, authResultHandler);
 
-
-//        // set child event handlers
-//        fref.addChildEventListener(new ChildEventListener() {
-//            @Override
-//            public void onChildAdded(DataSnapshot snapshot, String previousChild) {
-//               // System.out.println("The " + snapshot.getKey() + " dinosaur's score is " + snapshot.getValue());
-//                //showToastMsg("Fservice addChildEventListener - ");
-//
-//            }
-//
-//            @Override
-//            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-//
-//                System.out.println("The " + dataSnapshot.getKey() + " dinosaur's score is " + dataSnapshot.getValue());
-//                showToastMsg("Fservice addChildEventListener - ");
-//                JSONObject notification_payload = new JSONObject();
-//                try{
-//                    notification_payload.put("head","Twoosh - You are connected.");
-//                    notification_payload.put("body","Chat msg");
-//                }
-//                catch (Exception e){
-//
-//                }
-//                Notifs notify = new Notifs();
-//                notify.notify(getApplicationContext(), notification_payload);
-//
-//            }
-//
-//            @Override
-//            public void onChildRemoved(DataSnapshot dataSnapshot) {
-//
-//            }
-//
-//            @Override
-//            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(FirebaseError firebaseError) {
-//
-//            }
-//        });
-//
-//
-//
-//
-//        // set add value event handlers
-//        fref.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot snapshot) {
-//               // System.out.println(snapshot.getValue());
-//
-////                String key = snapshot.getKey();
-////                DataSnapshot d = snapshot.child(key);
-////                ChatListItem post = d.getValue(ChatListItem.class);
-////
-////                showToastMsg("Fservice onaddvalueEVent - ");
-////                JSONObject notification_payload = new JSONObject();
-////                try{
-////                    notification_payload.put("head","Twoosh - You are connected.");
-////                    notification_payload.put("body","Chat msg");
-////                }
-////                catch (Exception e){
-////
-////                }
-////                Notifs notify = new Notifs();
-////                notify.notify(getApplicationContext(), notification_payload);
-//            }
-//            //
-//            @Override
-//            public void onCancelled(FirebaseError firebaseError) {
-//                System.out.println("The read failed: " + firebaseError.getMessage());
-//            }
-//        });
 
     }
-
-//    public void authenticateFirebase(){
-//
-//            if(User.f_access_token!=""){
-//                fref.authWithCustomToken(User.f_access_token, authResultHandler);
-//            }else{
-//                getFirebaseAuth();
-//            }
-//    }
-
-
     public static void registerRoomListeners(){
 
 
@@ -417,5 +285,9 @@ public class FService extends Service {
 
         this.isRunning = false;
         showToastMsg("Fservice on destroy called...");
+        super.onDestroy();
+        this.isRunning = false;
+        showToastMsg("Restarting service...");
+
     }
 }

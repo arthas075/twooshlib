@@ -173,6 +173,7 @@ public class VerifyOTP extends AppCompatActivity {
                     if(roomlist_response.getString("status").equals("Success") && (roomlist_response.getString("response").length()>0)){
                         User.f_access_token = roomlist_response.getString("response");
                         //  fref.authWithCustomToken(User.f_access_token, authResultHandler);
+                        Prefs.subscribeRoom("everything");
                         Prefs.saveUserStatics();
                         // dock.putExtra("work","getaccess");
                         Intent dock = new Intent(VerifyOTP.this, TwooshDock.class);

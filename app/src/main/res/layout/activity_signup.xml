@@ -83,7 +83,7 @@
             android:textCursorDrawable="@null"
             android:padding="10dp"
             android:id="@+id/twoosh_user_mobile"
-            android:hint="Enter your 10 digit mobile..."/>
+            android:hint="Enter your 10 digit mobile number"/>
 
     </LinearLayout>
 
@@ -110,16 +110,37 @@
 
 
 
-
-
-    <Button
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Signup"
-        android:layout_marginTop="50dp"
-        android:textColor="#fff"
-        android:background="#99cc00"
-        android:id="@+id/Signup"/>
+        android:orientation="vertical"
+        android:id="@+id/twoosh_btns"
+        android:padding="3dp">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Signup"
+            android:layout_marginTop="50dp"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="50dp"
+            android:textColor="#fff"
+            android:background="#99cc00"
+            android:id="@+id/Signup"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Login"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="50dp"
+            android:layout_marginTop="50dp"
+            android:textColor="#fff"
+            android:background="#99cc00"
+            android:id="@+id/Login"/>
+
+
+    </RelativeLayout>
 
 
 </LinearLayout>

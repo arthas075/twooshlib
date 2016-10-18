@@ -18,7 +18,8 @@
         android:label="Twoosh"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".TwooshDock"
+        <activity
+            android:name=".TwooshDock"
             android:label="@string/title_activity_twoosh_dock">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,11 +29,7 @@
         </activity>
         <activity
             android:name=".RoomDock"
-            android:label="@string/title_activity_room_dock">
-
-
-
-        </activity>
+            android:label="@string/title_activity_room_dock"></activity>
         <activity
             android:name=".CreatePost"
             android:label="@string/title_activity_create_post"
@@ -67,10 +64,25 @@
             android:enabled="true"
             android:exported="true" />
 
-        <activity android:name=".Signup2"
-            android:label="@string/title_activity_user_profile" >
+        <activity
+            android:name=".Signup2"
+            android:label="@string/title_activity_user_profile"></activity>
 
-        </activity>
+        <service android:name=".services.FCMService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
+        <service android:name=".services.FCMServiceMsg">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <activity
+            android:name=".Login"
+            android:label="@string/title_activity_login"
+            ></activity>
     </application>
 
 </manifest>

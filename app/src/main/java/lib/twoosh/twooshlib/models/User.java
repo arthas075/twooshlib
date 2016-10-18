@@ -31,8 +31,11 @@ public class User {
 
     public static String f_access_token = "";
 
-    public static String dynamic_location = "";
 
+    public static JSONObject subscribed_rooms = new JSONObject();
+    public static JSONObject subscribed_posts = new JSONObject();
+    public static String dynamic_location = "";
+    public static boolean chatboxactive = false;
 
     public static String current_post = "";
     public static String userid = "";

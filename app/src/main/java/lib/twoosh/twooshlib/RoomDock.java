@@ -98,7 +98,7 @@ public class RoomDock extends AppCompatActivity implements Callbacker{
 //        this.getSupportActionBar().setSubtitle("Twoosh - You are connected.");
 
 
-
+        invalidateOptionsMenu();
     }
 
     public void touchUser(){
@@ -222,10 +222,31 @@ public class RoomDock extends AppCompatActivity implements Callbacker{
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_twoosh_dock, menu);
+        getMenuInflater().inflate(R.menu.menu_roomdock, menu);
         return true;
     }
 
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu){
+
+        try{
+            if(User.subscribed_rooms.has(User.current_room)){
+                if(User.subscribed_rooms.getString(User.current_room).equals("1")){
+                    menu.findItem(R.id.action_follow_room).setVisible(false);
+                }else{
+                    menu.findItem(R.id.action_unfollow_room).setVisible(false);
+                }
+
+            }else{
+                menu.findItem(R.id.action_unfollow_room).setVisible(false);
+            }
+
+        }
+        catch (Exception err){
+            System.out.println("Error in prepare options "+err.toString());
+        }
+        return true;
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -234,8 +255,25 @@ public class RoomDock extends AppCompatActivity implements Callbacker{
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == R.id.action_follow_room) {
+            try{
+
+                User.subscribed_rooms.put(User.current_room,"1");
+                Prefs.saveUserStatics();
+            }
+            catch (Exception err){}
+            invalidateOptionsMenu();
+
+        }else if(id == R.id.action_unfollow_room){
+
+            try{
+                User.subscribed_rooms.put(User.current_room,"0");
+                Prefs.saveUserStatics();
+            }
+            catch (Exception err){}
+            invalidateOptionsMenu();
+
+
         }
 
         return super.onOptionsItemSelected(item);

@@ -2,6 +2,7 @@ package lib.twoosh.twooshlib.models;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.system.ErrnoException;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -57,6 +58,8 @@ public class Prefs {
             User.access_token = user_data.getString("access_token");
             User.f_access_token = user_data.getString("f_access_token");
             User.appname = "Twoosh";
+            User.subscribed_rooms = user_data.getJSONObject("subscribed_rooms");
+            User.subscribed_posts = user_data.getJSONObject("subscribed_posts");
 
 
         } catch (JSONException e) {
@@ -78,6 +81,8 @@ public class Prefs {
             userdetails.put("access_token", User.access_token);
             userdetails.put("f_access_token", User.f_access_token);
             userdetails.put("appname", User.appname);
+            userdetails.put("subscribed_rooms", User.subscribed_rooms);
+            userdetails.put("subscribed_posts", User.subscribed_posts);
 
             SharedPreferences.Editor editor = prefs.edit();
             editor.putString("twoosher", userdetails.toString());
@@ -86,6 +91,28 @@ public class Prefs {
         }
         catch (Exception e){
 
+
+        }
+    }
+
+    public static void subscribeRoom(String room){
+
+            try{
+
+                User.subscribed_rooms.put(room,"1");
+
+            }catch (Exception e){
+
+            }
+    }
+
+    public static void subscribePost(String postid){
+
+        try{
+
+            User.subscribed_posts.put(postid,"1");
+
+        }catch (Exception e){
 
         }
     }

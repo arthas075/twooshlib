@@ -27,7 +27,10 @@ public class Notifs {
     String module = "posts" ;
     String msg;
     String room;
+    String type;
     JSONObject payload;
+    public Notification newmsgnotif = null;
+    NotificationManager mNotificationManager = null;
     public Notifs()
     {
         msghead = "Twoosh - You are connected";
@@ -35,23 +38,39 @@ public class Notifs {
         room = "everything";
     }
 
+    public void build(Context c, JSONObject payload){
 
+
+
+
+
+    }
     public void notify(Context c,JSONObject payload)
     {
-
 
         try {
 
             msghead=payload.getString("head");
             msg=payload.getString("body");
             room = payload.getString("room");
+            type = payload.getString("type");
             NotificationCompat.Builder mBuilder =
                     new NotificationCompat.Builder(c)
                             .setSmallIcon(R.drawable.twoosh_icon)
                             .setContentTitle(msghead)
                             .setContentText(msg);
+            Intent resultIntent = null;
+            switch(type){
+                case "NP":
+                    resultIntent = new Intent(c, RoomDock.class);
+                    break;
+                case "NC":
+                    resultIntent = new Intent(c, Chatbox.class);
+                    break;
+                default:
+                    break;
+            }
 
-            Intent resultIntent = new Intent(c, RoomDock.class);
             resultIntent.putExtra("room", room);
             Date utildate = new Date();
             String twoosh_ts =  Long.toString(utildate.getTime()/1000);
@@ -59,26 +78,9 @@ public class Notifs {
             resultIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
                     Intent.FLAG_ACTIVITY_SINGLE_TOP);
             resultIntent.setAction(twoosh_ts);
-            //resultIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            //resultIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                    //Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            //Intent backIntent = new Intent(c, TwooshDock.class);
+
             PendingIntent pintent = PendingIntent.getActivity(c, 0,
                     resultIntent, 0);
-
-            //PendingIntent pendingIntent =
-//                TaskStackBuilder.create(c)
-//                        // add all of DetailsActivity's parents to the stack,
-//                        // followed by DetailsActivity itself
-//                        .addNextIntentWithParentStack(resultIntent)
-//                        .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-
-
-//                            PendingIntent resultPendingIntent =
-//                                    stackBuilder.getPendingIntent(
-//                                            0,
-//                                            PendingIntent.FLAG_UPDATE_CURRENT
-//                                    );
             mBuilder.setContentIntent(pintent);
             int defaults = 0;
             defaults = defaults | Notification.DEFAULT_LIGHTS;
@@ -86,10 +88,10 @@ public class Notifs {
             defaults = defaults | Notification.DEFAULT_SOUND;
 
             mBuilder.setDefaults(defaults);
-            NotificationManager mNotificationManager =
+            mNotificationManager =
                     (NotificationManager) c.getSystemService(Context.NOTIFICATION_SERVICE);
 //          mId allows you to update the notification later on.
-            Notification newmsgnotif = mBuilder.build();
+            newmsgnotif = mBuilder.build();
             newmsgnotif.flags |= Notification.FLAG_AUTO_CANCEL;
             mNotificationManager.notify(1,newmsgnotif);
 

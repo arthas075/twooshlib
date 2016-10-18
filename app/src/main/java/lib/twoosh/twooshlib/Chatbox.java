@@ -2,41 +2,36 @@ package lib.twoosh.twooshlib;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.firebase.client.AuthData;
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.firebase.client.ServerValue;
 import com.firebase.client.ValueEventListener;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.util.HashMap;
 
 import lib.twoosh.twooshlib.adapters.ChatListAdapter;
 import lib.twoosh.twooshlib.models.ChatListItem;
-import lib.twoosh.twooshlib.models.PeopleListItem;
+import lib.twoosh.twooshlib.models.Fref;
+import lib.twoosh.twooshlib.models.Prefs;
 import lib.twoosh.twooshlib.models.User;
 import lib.twoosh.twooshlib.networks.HttpClient;
-import lib.twoosh.twooshlib.notifs.Notifs;
+import lib.twoosh.twooshlib.notifs.NotifObj;
 
 public class Chatbox extends AppCompatActivity {
 
@@ -44,6 +39,7 @@ public class Chatbox extends AppCompatActivity {
     private ChatListAdapter chatboxAdapter;
 
     static String twoosh_id = "";
+    static String twoosh_text = "";
     Firebase postchatref = null;
     ListView chatRecyclerView = null;
     Firebase.AuthResultHandler authResultHandler = null;
@@ -70,10 +66,12 @@ public class Chatbox extends AppCompatActivity {
 
         Intent i = getIntent();
 
-        String twooshtext = i.getStringExtra("twoosh_text");
+        this.twoosh_text = i.getStringExtra("twoosh_text");
         String twooshid = i.getStringExtra("twoosh_id");
+        this.twoosh_text = i.getStringExtra("twoosh_text");
         this.twoosh_id = twooshid;
         User.current_post = twooshid;
+        User.chatboxactive = true;
         String username = i.getStringExtra("username");
         String userid = i.getStringExtra("user_id");
         String replies = i.getStringExtra("replies");
@@ -87,7 +85,7 @@ public class Chatbox extends AppCompatActivity {
         TextView chathead_twooshtime = (TextView)findViewById(R.id.chathead_postTime);
 
 
-        chathead_twooshtext.setText(twooshtext);
+        chathead_twooshtext.setText(this.twoosh_text);
         chathead_username.setText(username);
         chathead_replies.setText("Replies : "+replies);
         chathead_following.setText("Following : "+following);
@@ -99,6 +97,7 @@ public class Chatbox extends AppCompatActivity {
         chatRecyclerView = (ListView)findViewById(R.id.chats_recycler_view);
         chatRecyclerView.setAdapter(chatboxAdapter);
         setFirebaseForChat();
+        invalidateOptionsMenu();
 
     }
 
@@ -274,14 +273,56 @@ public class Chatbox extends AppCompatActivity {
         int count = chatboxAdapter.getCount();
         chatRecyclerView.smoothScrollToPosition(count-1);
 
+
+        // send chat to notification channel
+        NotifObj notifobj = new NotifObj();
+        notifobj.notif_type = "NC";
+        notifobj.room = User.current_room;
+        notifobj.user_name = User.name;
+        notifobj.head = this.twoosh_id;
+        notifobj.twoosh_id = this.twoosh_id;
+        notifobj.twoosh_text = this.twoosh_text;
+        notifobj.body = chat_text;
+        notifobj.timestring = ServerValue.TIMESTAMP;
+        Fref.fref_notifs.push().setValue(notifobj);
+
+
+        // subscribe this post and room
+        try{
+        if(!User.subscribed_posts.getString(User.current_post).equals("1")) {
+            Prefs.subscribePost(User.current_post);
+            Prefs.saveUserStatics();
+        }}catch (Exception e){}
+
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_twoosh_dock, menu);
+        getMenuInflater().inflate(R.menu.menu_chatbox, menu);
         return true;
     }
 
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu){
+
+        try{
+            if(User.subscribed_posts.has(User.current_post)){
+                if(User.subscribed_posts.getString(User.current_post).equals("1")){
+                    menu.findItem(R.id.action_follow_post).setVisible(false);
+                }else{
+                    menu.findItem(R.id.action_unfollow_post).setVisible(false);
+                }
+
+            }else{
+                menu.findItem(R.id.action_unfollow_post).setVisible(false);
+            }
+
+        }
+        catch (Exception err){
+            System.out.println("Error in prepare options "+err.toString());
+        }
+        return true;
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -290,8 +331,24 @@ public class Chatbox extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == R.id.action_follow_post) {
+
+            try{
+
+                User.subscribed_posts.put(User.current_post,"1");
+                Prefs.saveUserStatics();
+            }
+            catch (Exception err){}
+            invalidateOptionsMenu();
+
+        }else if(id == R.id.action_unfollow_post){
+            try{
+
+                User.subscribed_posts.put(User.current_post,"1");
+                Prefs.saveUserStatics();
+            }
+            catch (Exception err){}
+            invalidateOptionsMenu();
         }
 
         return super.onOptionsItemSelected(item);

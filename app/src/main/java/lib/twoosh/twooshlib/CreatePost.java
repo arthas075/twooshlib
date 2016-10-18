@@ -45,11 +45,7 @@ public class CreatePost extends AppCompatActivity {
     public void initActivity(){
 
         touchUser();
-//        if(User.newuser && User.access_token.equals("")){
 
-            // show name and mobile inputs
-           // showNameAndEmailInputs();
-       // }
     }
 
     public void touchUser(){
@@ -61,24 +57,13 @@ public class CreatePost extends AppCompatActivity {
             initFirebase();
         }
 
-
-
-
-
-
     }
 
     public void initFirebase(){
 
 
     }
-    public void showNameAndEmailInputs(){
 
-//        LinearLayout entername = (LinearLayout)findViewById(R.id.twoosh_enter_name);
-//        LinearLayout entermobile = (LinearLayout)findViewById(R.id.twoosh_enter_mobile);
-//        entername.setVisibility(View.VISIBLE);
-//        entermobile.setVisibility(View.VISIBLE);
-    }
     public void performTwoosh(String twooshraw){
 
 
@@ -91,6 +76,13 @@ public class CreatePost extends AppCompatActivity {
         newpost.timestring = ServerValue.TIMESTAMP;
         Fref.fref_base.child(User.current_room).child(twooshid).setValue(newpost);
 
+
+        // subscribe this post and room
+        Prefs.subscribeRoom(User.current_room);
+        Prefs.subscribePost(twooshid);
+        Prefs.saveUserStatics();
+
+
         // set notification channel
         NotifObj notifobj = new NotifObj();
         notifobj.notif_type = "NP";
@@ -100,40 +92,6 @@ public class CreatePost extends AppCompatActivity {
         notifobj.body = twooshraw;
         notifobj.timestring = ServerValue.TIMESTAMP;
         Fref.fref_notifs.push().setValue(notifobj);
-
-//        String hashtags = getHashTags(twooshraw);
-//        try {
-//
-//            jObj.put("twoosh_text", twooshraw);
-//
-//
-//            jObj.put("twoosh_ts", twoosh_ts);
-//            //jObj.put("userid",Integer.toString(thisuser.userid));
-//            jObj.put("user_id", User.userid);
-//            jObj.put("room", User.current_room);
-//            jObj.put("user_name",User.name);
-//            jObj.put("hash_tags", "");
-////            jObj.put("corp_referrer", User.corpid);
-////            jObj.put("corp_auth", User.corp_auth_token);
-//
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-        //wordlistref.push().setValue(roomitem);
-        //wordlistref.child(roomname).setValue(roomitem);
-
-//        Intent i = new Intent(CreatePost.this, RoomDock.class);
-//        startActivity(i);
-       // String resp = publishTwooshRemote(jObj);
-//        if (resp.equals("1")){
-
-
-
-//        }
-//        serversocket.emit("twooosher",jObj.toString());
-//        persistTwooshRemote(jObj);
-//        persistTwooshLocal(jObj);
-//        goToDock();
 
 
     }
@@ -176,18 +134,6 @@ public class CreatePost extends AppCompatActivity {
 
                         Toast.makeText(CreatePost.this, "In else part", Toast.LENGTH_SHORT).show();
                     }
-
-//                    JSONObject syncdata = userresp.getJSONObject("data");
-//                    JSONArray updatedata = syncdata.getJSONArray("update");
-//                    JSONArray insertdata = syncdata.getJSONArray("insert");
-//                    if(userresp.get("status").equals("success"))
-//                    {
-//
-//                        syncAdapter(insertdata,updatedata);
-//                        syncLocalHash(insertdata,updatedata);
-//                        //insertSyncLocalTags(userresp.getJSONArray("data"),localId);
-//
-//                    }
 
 
                 } catch (JSONException e) {

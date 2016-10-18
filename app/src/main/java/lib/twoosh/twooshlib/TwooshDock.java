@@ -2,7 +2,6 @@ package lib.twoosh.twooshlib;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -10,19 +9,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import lib.twoosh.twooshlib.adapters.RoomListAdapter;
 import lib.twoosh.twooshlib.interfaces.Callbacker;
 import lib.twoosh.twooshlib.models.Fref;
-import lib.twoosh.twooshlib.models.PostListItem;
 import lib.twoosh.twooshlib.models.Prefs;
 import lib.twoosh.twooshlib.models.RoomListItem;
 import lib.twoosh.twooshlib.networks.HttpClient;
 import lib.twoosh.twooshlib.models.User;
-import lib.twoosh.twooshlib.notifs.Notifs;
 import lib.twoosh.twooshlib.notifs.Toasts;
-import lib.twoosh.twooshlib.services.SocketService;
 import lib.twoosh.twooshlib.services.FService;
 
 import com.firebase.client.AuthData;
@@ -31,7 +26,6 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
-import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -156,6 +150,7 @@ public class TwooshDock extends AppCompatActivity implements Callbacker{
         }
 
         Fref.fref_rooms = Fref.fref_base.child("Twoosh").child("rooms");
+
 
         this.authResultHandler = new Firebase.AuthResultHandler() {
             @Override
@@ -388,7 +383,9 @@ public class TwooshDock extends AppCompatActivity implements Callbacker{
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_twoosh_dock, menu);
+        if(User.user_type.equals("C")) {
+            getMenuInflater().inflate(R.menu.menu_chatbox, menu);
+        }
         return true;
     }
 
@@ -403,12 +400,21 @@ public class TwooshDock extends AppCompatActivity implements Callbacker{
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_create_room) {
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onDestroy(){
+
+        new Toasts().showToastMsg(this,"TwooshDock ondestroy1");
+        stopService(new Intent(getApplicationContext(),FService.class));
+        super.onDestroy();
+        startService(new Intent(getApplicationContext(), FService.class));
+
+    }
 
 }
