@@ -6,24 +6,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="visible"
-        android:background="#fff"
-       >
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="#ff0000"
-            android:visibility="invisible"
-
-            android:padding="3dp"
-            android:textSize="10dp"
-            android:text="Typing..."/>
-
-
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:orientation="horizontal">
 
         <EditText
@@ -32,19 +15,37 @@
             android:padding="10dp"
             android:id="@+id/chat_msg"
 
-            android:hint="Write something..."
+            android:hint="Ask something..."
             android:background="@drawable/et_border"
             android:layout_height="match_parent" />
 
         <Button
             android:layout_width="wrap_content"
             android:id="@+id/btn_send_chat"
+            android:visibility="gone"
             android:layout_height="wrap_content"
             android:background="@color/twoosh_green"
             android:textColor="#fff"
             android:text="Go"/>
 
     </LinearLayout>
+    <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:visibility="gone"-->
+        <!--android:background="#f1f1f1"-->
+        <!--&gt;-->
+        <!--<TextView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:textColor="#ff0000"-->
+            <!--android:padding="3dp"-->
+            <!--android:textSize="10dp"-->
+            <!--android:text="Typing..."/>-->
+
+
+    <!--</LinearLayout>-->
+
 
 
 </LinearLayout>

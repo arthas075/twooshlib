@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="lib.twoosh.twooshlib">
+    package="lib.twoosh.twooshlib" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
@@ -17,19 +17,22 @@
         android:icon="@drawable/twoosh_icon"
         android:label="Twoosh"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme" >
         <activity
             android:name=".TwooshDock"
-            android:label="@string/title_activity_twoosh_dock">
+            android:label="@string/title_activity_twoosh_dock" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+
+
         </activity>
         <activity
             android:name=".RoomDock"
-            android:label="@string/title_activity_room_dock"></activity>
+            android:label="@string/title_activity_room_dock" />
         <activity
             android:name=".CreatePost"
             android:label="@string/title_activity_create_post"
@@ -37,8 +40,8 @@
         <activity
             android:name=".Chatbox"
             android:label="@string/title_activity_chatbox"
-            android:theme="@style/AppTheme"
-            android:windowSoftInputMode="adjustPan" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".ScrollTestActivity"
             android:label="@string/title_activity_scroll_test"
@@ -66,14 +69,14 @@
 
         <activity
             android:name=".Signup2"
-            android:label="@string/title_activity_user_profile"></activity>
+            android:label="@string/title_activity_user_profile" />
 
-        <service android:name=".services.FCMService">
+        <service android:name=".services.FCMService" >
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-        <service android:name=".services.FCMServiceMsg">
+        <service android:name=".services.FCMServiceMsg" >
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
@@ -81,8 +84,15 @@
 
         <activity
             android:name=".Login"
-            android:label="@string/title_activity_login"
-            ></activity>
+            android:label="@string/title_activity_login" />
+
+
+        <activity android:name=".Index"
+            android:label="Twoosh - You are connected."
+            android:theme="@style/AppTheme.NoActionBar">
+
+
+        </activity>
     </application>
 
 </manifest>

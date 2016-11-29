@@ -1,11 +1,9 @@
 package lib.twoosh.twooshlib.models;
 
-import java.util.Map;
-
 /**
  * Created by arthas on 13/9/16.
  */
-public class ChatListItem {
+public class ChatListItemTs {
 
 
     public String chatmsg;
@@ -18,20 +16,22 @@ public class ChatListItem {
     public String chat_fromuserid="";
     public String chat_postid ="";
     public String chat_id = "";
-    public Map<String,String> timestring ;
+    public long timestring ;
 
 
 
 
 
-    public ChatListItem(String from,String msg)
+
+
+    public ChatListItemTs(String from,String msg)
     {
         chatfrom = from;
         chatmsg = msg;
 
     }
 
-    public ChatListItem(String chatid, String chatmsg, String chatfrom,String chattime, String twooshpostid)
+    public ChatListItemTs(String chatid, String chatmsg, String chatfrom,String chattime, String twooshpostid)
     {
 
         this.chat_id =  chatid;

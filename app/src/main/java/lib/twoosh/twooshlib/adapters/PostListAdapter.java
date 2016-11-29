@@ -16,6 +16,7 @@ import java.util.List;
 
 import lib.twoosh.twooshlib.R;
 import lib.twoosh.twooshlib.models.PostListItem;
+import lib.twoosh.twooshlib.utils.Utils;
 
 /**
  * Created by satyam on 29/12/15.
@@ -137,14 +138,19 @@ public class PostListAdapter extends BaseAdapter {
 
         TextView distinct_users = (TextView)row.findViewById(R.id.distinctusers);
         TextView chatreplies = (TextView)row.findViewById(R.id.chatreplies);
-        twooshpost.setText(postObj.twoosh_text);
-        twooshuserid.setText(postObj.user_name);
-        distinct_users.setText(postObj.users_count);
-        chatreplies.setText(postObj.replies_count);
-        postTime.setText(postObj.twoosh_time);
+        twooshpost.setText(postObj.p);
+        twooshuserid.setText(postObj.from_name);
+        distinct_users.setText(postObj.following);
+        chatreplies.setText(postObj.replies);
+
+
+        String timezonestring = Utils.getTimeZoneString(postObj.twoosh_time);
+        postTime.setText(timezonestring);
         //postTime.setText(postObj.getGMTDateString());
         postOnline.setText("Online : "+postObj.online_count);
         return row;
 
     }
+
+
 }

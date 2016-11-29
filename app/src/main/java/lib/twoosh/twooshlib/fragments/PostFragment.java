@@ -327,23 +327,23 @@ public class PostFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-              PostListItem m = (PostListItem) parent.getAdapter().getItem(position);
-                //TagListItem m = (TagListItem)view.getTag(R.id.tagList);
-                //Toast.makeText(TwooshDock.this, m.tagdesc, Toast.LENGTH_SHORT).show();
+                 PostListItem m = (PostListItem) parent.getAdapter().getItem(position);
+                 //TagListItem m = (TagListItem)view.getTag(R.id.tagList);
+                 //Toast.makeText(TwooshDock.this, m.tagdesc, Toast.LENGTH_SHORT).show();
                  Intent intent = new Intent(getActivity(), Chatbox.class);
-                 intent.putExtra("twoosh_text",m.twoosh_text);
+                 intent.putExtra("twoosh_text",m.p);
                  intent.putExtra("twoosh_id", m.twoosh_id);
-                intent.putExtra("username", m.user_name);
-                intent.putExtra("user_id", m.user_id);
-                intent.putExtra("replies","0");
+                 intent.putExtra("username", m.user_name);
+                 intent.putExtra("user_id", m.user_id);
+                 intent.putExtra("replies","0");
 
-                intent.putExtra("following", "0");
-                intent.putExtra("twoosh_time", m.twoosh_time);
+                 intent.putExtra("following", "0");
+                 intent.putExtra("twoosh_time", m.twoosh_time);
 
 
 
-                // intent.putExtra("tagname", m.tagname);
-                startActivity(intent);
+                 // intent.putExtra("tagname", m.tagname);
+                 startActivity(intent);
             }
 
 

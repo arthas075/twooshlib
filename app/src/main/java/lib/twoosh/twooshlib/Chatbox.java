@@ -23,6 +23,7 @@ import com.firebase.client.ValueEventListener;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Date;
 import java.util.HashMap;
 
 import lib.twoosh.twooshlib.adapters.ChatListAdapter;
@@ -32,6 +33,8 @@ import lib.twoosh.twooshlib.models.Prefs;
 import lib.twoosh.twooshlib.models.User;
 import lib.twoosh.twooshlib.networks.HttpClient;
 import lib.twoosh.twooshlib.notifs.NotifObj;
+import lib.twoosh.twooshlib.services.FService;
+import lib.twoosh.twooshlib.utils.Utils;
 
 public class Chatbox extends AppCompatActivity {
 
@@ -62,7 +65,6 @@ public class Chatbox extends AppCompatActivity {
     }
 
     public void initActivity(){
-        getSupportActionBar().setTitle("Twoosh Chatbox");
 
         Intent i = getIntent();
 
@@ -71,12 +73,18 @@ public class Chatbox extends AppCompatActivity {
         this.twoosh_text = i.getStringExtra("twoosh_text");
         this.twoosh_id = twooshid;
         User.current_post = twooshid;
-        User.chatboxactive = true;
-        String username = i.getStringExtra("username");
+        FService.chatboxactive = true;
+        String username = i.getStringExtra("user_name");
         String userid = i.getStringExtra("user_id");
         String replies = i.getStringExtra("replies");
         String following = i.getStringExtra("following");
         String twoosh_time = i.getStringExtra("twoosh_time");
+        String timezonestring = Utils.getTimeZoneString(twoosh_time);
+
+
+        //getSupportActionBar().setTitle(this.twoosh_text);
+        //getSupportActionBar().setSubtitle("replies : "+replies+"  following : "+following);
+
 
         TextView chathead_twooshtext = (TextView)findViewById(R.id.chathead_twooshtext);
         TextView chathead_username = (TextView)findViewById(R.id.chathead_username);
@@ -89,7 +97,7 @@ public class Chatbox extends AppCompatActivity {
         chathead_username.setText(username);
         chathead_replies.setText("Replies : "+replies);
         chathead_following.setText("Following : "+following);
-        chathead_twooshtime.setText(twoosh_time);
+        chathead_twooshtime.setText(timezonestring);
 
 
 
@@ -98,18 +106,24 @@ public class Chatbox extends AppCompatActivity {
         chatRecyclerView.setAdapter(chatboxAdapter);
         setFirebaseForChat();
         invalidateOptionsMenu();
+        String notifed = i.getStringExtra("notifed");
+        if(notifed!=null && notifed.equals("1")){
+            markLastSeen();
+        }
+
+
 
     }
 
 
     public void setFirebaseForChat(){
 
-         postchatref = new Firebase("https://twooshapp-763a4.firebaseio.com");
-         postchatref = postchatref.child("posts").child(this.twoosh_id);
+        postchatref = new Firebase("https://twooshapp-763a4.firebaseio.com");
+        postchatref = postchatref.child("chats").child(this.twoosh_id);
 //
-         postchatref.keepSynced(true);
+        postchatref.keepSynced(true);
 //
-         getFirebaseAuth();
+        getFirebaseAuth();
         postchatref.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot snapshot, String previousChild) {
@@ -236,7 +250,19 @@ public class Chatbox extends AppCompatActivity {
 
     }
 
+    public void markLastSeen(){
 
+        JSONObject jObj = new JSONObject();
+        Date utildate = new Date();
+        Long twoosh_ts =  utildate.getTime();
+        try{
+            User.last_seen.put("P-"+User.current_post,twoosh_ts);
+            Prefs.saveUserStatics();
+
+        }catch (Exception e){
+
+        }
+    }
     public void attachListeners(){
 
 
@@ -266,10 +292,11 @@ public class Chatbox extends AppCompatActivity {
     public void sendChatMsg(String chat_text) {
 
 
-        long unixTime = System.currentTimeMillis() / 1000L;
+        long unixTime = System.currentTimeMillis();
         String chatid = this.twoosh_id + unixTime;
         ChatListItem newchat = new ChatListItem(chatid, chat_text, User.name, "00:00 GMT", this.twoosh_id);
-        postchatref.child(chatid).setValue(newchat);
+        newchat.timestring = ServerValue.TIMESTAMP;
+        postchatref.push().setValue(newchat);
         int count = chatboxAdapter.getCount();
         chatRecyclerView.smoothScrollToPosition(count-1);
 
@@ -289,10 +316,16 @@ public class Chatbox extends AppCompatActivity {
 
         // subscribe this post and room
         try{
-        if(!User.subscribed_posts.getString(User.current_post).equals("1")) {
+        if (!(User.subscribed_posts.has(User.current_post) && (User.subscribed_posts.getString(User.current_post).equals("1")))){
+
             Prefs.subscribePost(User.current_post);
             Prefs.saveUserStatics();
-        }}catch (Exception e){}
+
+        }
+
+
+
+        }catch (Exception e){}
 
     }
     @Override
@@ -352,5 +385,15 @@ public class Chatbox extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onDestroy(){
+
+        FService.chatboxactive = false;
+        markLastSeen();
+        User.current_post = "";
+
+        super.onDestroy();
     }
 }

@@ -1,28 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-
-
-    android:id="@+id/keyboard_listener"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-
+    android:paddingLeft="0dp"
+    android:paddingRight="0dp"
+    android:paddingTop="0dp"
+    android:paddingBottom="0dp"
+    android:background="#f1f1f1"
+    tools:context="lib.twoosh.twooshlib.Chatbox"
     >
 
-    <include layout="@layout/chat_headbox" />
 
-    <ListView
-        android:id="@+id/chats_recycler_view"
-        android:scrollbars="vertical"
-        android:background="#fff"
-        android:layout_weight="1"
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/relativeLayout"
+        android:id="@+id/output_zone"
+       >
+
+        <include layout="@layout/chat_headbox"
+            android:id="@+id/headbox"
+            android:visibility="visible"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#fff"
+            android:layout_below="@+id/headbox">
+
+
+            <ListView
+                android:id="@+id/chats_recycler_view"
+                android:scrollbars="vertical"
+                android:background="#fff"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="false">
+            </ListView>
+
+
+        </RelativeLayout>
+    </RelativeLayout>
+
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-    >
-    </ListView>
+        android:layout_alignParentBottom="true"
+        android:id="@+id/relativeLayout">
 
-    <include layout="@layout/chat_replybox" />
-</LinearLayout>
+        <include layout="@layout/chat_replybox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+
+</RelativeLayout>

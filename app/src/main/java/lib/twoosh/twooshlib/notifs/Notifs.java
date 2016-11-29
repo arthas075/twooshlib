@@ -27,6 +27,7 @@ public class Notifs {
     String module = "posts" ;
     String msg;
     String room;
+    Long time;
     String type;
     JSONObject payload;
     public Notification newmsgnotif = null;
@@ -54,6 +55,7 @@ public class Notifs {
             msg=payload.getString("body");
             room = payload.getString("room");
             type = payload.getString("type");
+            time = payload.getLong("time");
             NotificationCompat.Builder mBuilder =
                     new NotificationCompat.Builder(c)
                             .setSmallIcon(R.drawable.twoosh_icon)
@@ -66,14 +68,29 @@ public class Notifs {
                     break;
                 case "NC":
                     resultIntent = new Intent(c, Chatbox.class);
+                    String twoosh_id = payload.getString("twoosh_id");
+                    String twoosh_text = payload.getString("head");
+                    resultIntent.putExtra("twoosh_id",twoosh_id);
+                    resultIntent.putExtra("twoosh_text",twoosh_text);
+                    resultIntent.putExtra("twoosh_id",twoosh_id);
+                    resultIntent.putExtra("user_name",payload.getString("user_name"));
+                    resultIntent.putExtra("user_id", payload.getString("user_id"));
+                    resultIntent.putExtra("twoosh_time", payload.getString("twoosh_time"));
+                    resultIntent.putExtra("replies","1");
+                    resultIntent.putExtra("following", "1");
+                    break;
+                case "NR":
+                    resultIntent = new Intent(c, TwooshDock.class);
                     break;
                 default:
                     break;
             }
 
             resultIntent.putExtra("room", room);
+            resultIntent.putExtra("notifed","1");
+            resultIntent.putExtra("time",time);
             Date utildate = new Date();
-            String twoosh_ts =  Long.toString(utildate.getTime()/1000);
+            String twoosh_ts =  Long.toString(utildate.getTime());
 
             resultIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
                     Intent.FLAG_ACTIVITY_SINGLE_TOP);

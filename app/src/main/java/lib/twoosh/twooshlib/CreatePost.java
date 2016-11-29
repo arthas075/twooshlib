@@ -16,7 +16,12 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.MutableData;
 import com.firebase.client.ServerValue;
+import com.firebase.client.Transaction;
+import com.google.firebase.database.DatabaseError;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -72,9 +77,9 @@ public class CreatePost extends AppCompatActivity {
         Date utildate = new Date();
         String twoosh_ts =  Long.toString(utildate.getTime()/1000);
         String twooshid = "T"+twoosh_ts;
-        PostListItem newpost = new PostListItem(twooshraw,"T"+twoosh_ts,User.name, User.userid, "1","0","0",twoosh_ts);
-        newpost.timestring = ServerValue.TIMESTAMP;
-        Fref.fref_base.child(User.current_room).child(twooshid).setValue(newpost);
+        PostListItem newpost = new PostListItem(twooshraw,"T"+twoosh_ts,User.name, User.userid, "0","0","0",twoosh_ts);
+        newpost.ts = ServerValue.TIMESTAMP;
+        Fref.fref_base.child("posts").child(User.current_room).push().setValue(newpost);
 
 
         // subscribe this post and room
@@ -91,7 +96,30 @@ public class CreatePost extends AppCompatActivity {
         notifobj.head = "#"+User.current_room;
         notifobj.body = twooshraw;
         notifobj.timestring = ServerValue.TIMESTAMP;
+        notifobj.twoosh_id = twooshid;
         Fref.fref_notifs.push().setValue(notifobj);
+
+
+        // update post count for this room
+
+        Fref.fref_base.child("rooms").child(User.appname).child(User.current_room+"/hash_posts").runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                Integer currentValue = mutableData.getValue(Integer.class);
+                if (currentValue == null) {
+                    mutableData.setValue(1);
+                } else {
+                    mutableData.setValue(currentValue + 1);
+                }
+
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(FirebaseError databaseError, boolean committed, DataSnapshot dataSnapshot) {
+                System.out.println("Transaction completed");
+            }
+        });
 
 
     }

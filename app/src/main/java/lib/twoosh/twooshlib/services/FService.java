@@ -52,6 +52,7 @@ public class FService extends Service {
     public static Callbacker authcallback = null;
     public static Callbacker roomscallback = null;
     public static boolean roomdockactive = false;
+    public static boolean chatboxactive = false;
     public static Firebase.AuthResultHandler authResultHandler = null;
 
 
@@ -70,7 +71,7 @@ public class FService extends Service {
             prefs.setUserStatics();
             initFirebase();
         }
-        showToastMsg("FService oncreate called....");
+        //showToastMsg("FService oncreate called....");
 
 
     }
@@ -80,7 +81,7 @@ public class FService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
 
 
-        showToastMsg("FService on started....");
+        showToastMsg("Twoosh - You are connected...");
         this.isRunning = true;
 
         return START_STICKY;
@@ -137,17 +138,18 @@ public class FService extends Service {
                     System.out.print(dataSnapshot);
                     //Log.e("Get Data", post.<YourMethod>());
                 }
-                switch (notif.notif_type) {
-                    case "NP":
-                        notifyNewPost(notif);
-                        break;
-                    case "NC":
-                        notifyNewChat(notif);
-                        break;
-                    default:
-                        break;
+                if(notif!=null) {
+                    switch (notif.notif_type) {
+                        case "NP":
+                            notifyNewPost(notif);
+                            break;
+                        case "NC":
+                            notifyNewChat(notif);
+                            break;
+                        default:
+                            break;
+                    }
                 }
-
             }
 
             @Override
@@ -165,20 +167,22 @@ public class FService extends Service {
 
 
             if(User.subscribed_rooms.getString(notif.room).equals("1")){
-                if(!roomdockactive && (!User.current_room.equals(notif.room))){
-                    JSONObject notification_payload = new JSONObject();
-                    try {
-                        notification_payload.put("head", notif.head);
-                        notification_payload.put("body", notif.body);
-                        notification_payload.put("room", notif.room);
-                        notification_payload.put("type", notif.notif_type);
-                    } catch (Exception err) {
-                        showToastMsg(err.toString());
+                if(!roomdockactive && (!User.current_room.equals(notif.room))) {
+                    if (notif.timestring > User.last_seen.getLong("R-"+User.current_room)) {
+                        JSONObject notification_payload = new JSONObject();
+                        try {
+                            notification_payload.put("head", notif.head);
+                            notification_payload.put("body", notif.body);
+                            notification_payload.put("room", notif.room);
+                            notification_payload.put("type", notif.notif_type);
+                            notification_payload.put("time", notif.timestring);
+                        } catch (Exception err) {
+                            showToastMsg(err.toString());
+                        }
+                        Notifs notify = new Notifs();
+                        notify.notify(c, notification_payload);
                     }
-                    Notifs notify = new Notifs();
-                    notify.notify(c, notification_payload);
                 }
-
 
         }}
         catch (Exception e){}
@@ -187,13 +191,20 @@ public class FService extends Service {
 
             try {
             if(User.subscribed_posts.getString(notif.twoosh_id).equals("1")){
-                if(!User.chatboxactive && !User.current_post.equals(notif.twoosh_id)) {
+                if(!chatboxactive && !User.current_post.equals(notif.twoosh_id)) {
                     JSONObject notification_payload = new JSONObject();
 
                     notification_payload.put("head", notif.twoosh_text);
                     notification_payload.put("body", notif.body);
                     notification_payload.put("room", notif.room);
                     notification_payload.put("type", notif.notif_type);
+                    notification_payload.put("time", notif.timestring);
+                    notification_payload.put("twoosh_id", notif.twoosh_id);
+                    notification_payload.put("user_name", notif.user_name);
+                    notification_payload.put("user_id", notif.user_name);
+                    notification_payload.put("replies","1");
+                    notification_payload.put("following","1");
+                    notification_payload.put("twoosh_time",Long.toString(notif.timestring));
                     Notifs notify = new Notifs();
                     notify.notify(c, notification_payload);
                 }
@@ -284,10 +295,10 @@ public class FService extends Service {
     public void onDestroy(){
 
         this.isRunning = false;
-        showToastMsg("Fservice on destroy called...");
+        //showToastMsg("Fservice on destroy called...");
         super.onDestroy();
-        this.isRunning = false;
-        showToastMsg("Restarting service...");
+        //this.isRunning = false;
+        //showToastMsg("Restarting service...");
 
     }
 }

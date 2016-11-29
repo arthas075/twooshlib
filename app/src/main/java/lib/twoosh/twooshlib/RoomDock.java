@@ -38,6 +38,9 @@ import com.firebase.client.ValueEventListener;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Date;
+import java.util.HashMap;
+
 import lib.twoosh.twooshlib.adapters.PostListAdapter;
 import lib.twoosh.twooshlib.constants.AppConstants;
 import lib.twoosh.twooshlib.fragments.PeopleFragment;
@@ -86,21 +89,35 @@ public class RoomDock extends AppCompatActivity implements Callbacker{
         //getApplicationContext().getSharedPreferences("info.twoosh.TwooshUserPref", 0).edit().clear().commit();
         Intent i = getIntent();
         String room = i.getStringExtra("room");
+        Long time = i.getLongExtra("time",0);
+        String notifed = i.getStringExtra("notifed");
+        if(notifed!=null && notifed.equals("1")){
+            markLastSeen();
+        }
         User.current_room = room;
         FService.roomdockactive = true;
         // touch User
         touchUser();
 
 
-
-
-        this.getSupportActionBar().setSubtitle("#everything");
+        this.getSupportActionBar().setTitle("#everything");
 //        this.getSupportActionBar().setSubtitle("Twoosh - You are connected.");
-
-
         invalidateOptionsMenu();
     }
 
+    public void markLastSeen(){
+
+        JSONObject jObj = new JSONObject();
+        Date utildate = new Date();
+        Long twoosh_ts =  utildate.getTime();
+        try{
+            User.last_seen.put("R-"+User.current_room,twoosh_ts);
+            Prefs.saveUserStatics();
+
+        }catch (Exception e){
+
+        }
+    }
     public void touchUser(){
 
         Prefs prefs = new Prefs(getApplicationContext());
@@ -158,17 +175,30 @@ public class RoomDock extends AppCompatActivity implements Callbacker{
     public void setRoomListener(){
 
 
-        this.fref = Fref.fref_base.child(User.current_room);
+        this.fref = Fref.fref_base.child("posts").child(User.current_room);
         this.fref.keepSynced(true);
         Query orderedposts = this.fref.orderByChild("timestring");
         orderedposts.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot snapshot, String previousChild) {
 
+                PostListItemTs plo = null;
+                plo = snapshot.getValue(PostListItemTs.class);
+//                System.out.println("The " + snapshot.getKey() + " dinosaur's score is " + snapshot.getValue());
+//                for (DataSnapshot messageSnapshot: snapshot.getChildren()) {
+//                    plo = messageSnapshot.getValue(PostListItemTs.class);
+//                }
+                String ts = Long.toString(plo.ts/1000);
+                PostListItem pl = new PostListItem(plo.p,plo.twoosh_id,plo.user_name,plo.user_id,plo.following,plo.replies,plo.online_count,"1");
+//                Object e = snapshot.getValue();
+//                HashMap<String, String> map = (HashMap<String, String>) e;
+//
+//                String ts = Long.toString(Long.parseLong(map.get("ts"))/1000);
+//                PostListItem pl = new PostListItem(map.get("p"),snapshot.getKey(),map.get("from_name"),map.get("from_id"),map.get("following"),map.get("replies"),"0",ts);
 
-                System.out.println("The " + snapshot.getKey() + " dinosaur's score is " + snapshot.getValue());
-                PostListItemTs plo = snapshot.getValue(PostListItemTs.class);
-                PostListItem pl = new PostListItem(plo.twoosh_text,plo.twoosh_id,plo.user_name,plo.user_id,plo.users_count,plo.replies_count,plo.online_count,plo.twoosh_time);
+                //PostListItemTs plo = snapshot.getValue(PostListItemTs.class);
+
+
                 adapter.add(pl);
 
             }
@@ -200,12 +230,12 @@ public class RoomDock extends AppCompatActivity implements Callbacker{
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 System.out.println(snapshot.getValue());
-                for (DataSnapshot postSnapshot: snapshot.getChildren()) {
-                    PostListItemTs plo = postSnapshot.getValue(PostListItemTs.class);
-                    PostListItem pl = new PostListItem(plo.twoosh_text,plo.twoosh_id,plo.user_name,plo.user_id,plo.users_count,plo.replies_count,plo.online_count,plo.twoosh_time);
-
-
-                }
+//                for (DataSnapshot postSnapshot: snapshot.getChildren()) {
+//                    PostListItemTs plo = postSnapshot.getValue(PostListItemTs.class);
+//                    PostListItem pl = new PostListItem(plo.twoosh_text,plo.twoosh_id,plo.user_name,plo.user_id,plo.users_count,plo.replies_count,plo.online_count,plo.twoosh_time);
+//
+//
+//                }
                 adapter.notifyDataSetChanged();
 
             }
@@ -316,12 +346,12 @@ public class RoomDock extends AppCompatActivity implements Callbacker{
 
                 PostListItem m = (PostListItem) parent.getAdapter().getItem(position);
                 Intent intent = new Intent(RoomDock.this, Chatbox.class);
-                intent.putExtra("twoosh_text", m.twoosh_text);
+                intent.putExtra("twoosh_text", m.p);
                 intent.putExtra("twoosh_id", m.twoosh_id);
-                intent.putExtra("username", m.user_name);
-                intent.putExtra("user_id", m.user_id);
-                intent.putExtra("replies", "0");
-                intent.putExtra("following", "0");
+                intent.putExtra("user_name", m.from_name);
+                intent.putExtra("user_id", m.from_id);
+                intent.putExtra("replies", m.replies);
+                intent.putExtra("following", m.following);
                 intent.putExtra("twoosh_time", m.twoosh_time);
                 startActivity(intent);
 
@@ -337,6 +367,9 @@ public class RoomDock extends AppCompatActivity implements Callbacker{
     public void onDestroy(){
 
         FService.roomdockactive = false;
+
+        markLastSeen();
+        User.current_room = "";
         super.onDestroy();
     }
 

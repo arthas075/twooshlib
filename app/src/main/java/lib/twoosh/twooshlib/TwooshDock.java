@@ -126,7 +126,7 @@ public class TwooshDock extends AppCompatActivity implements Callbacker{
     @Override
     public void callback(String data){
 
-        new Toasts().showToastMsg(TwooshDock.this, "Init firebase listeners");
+        //new Toasts().showToastMsg(TwooshDock.this, "Init firebase listeners");
 
 
     }
@@ -149,7 +149,7 @@ public class TwooshDock extends AppCompatActivity implements Callbacker{
             Fref.fref_base = new Firebase("https://twooshapp-763a4.firebaseio.com");
         }
 
-        Fref.fref_rooms = Fref.fref_base.child("Twoosh").child("rooms");
+        Fref.fref_rooms = Fref.fref_base.child("rooms").child(User.appname);
 
 
         this.authResultHandler = new Firebase.AuthResultHandler() {

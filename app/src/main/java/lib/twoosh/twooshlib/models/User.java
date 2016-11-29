@@ -34,8 +34,9 @@ public class User {
 
     public static JSONObject subscribed_rooms = new JSONObject();
     public static JSONObject subscribed_posts = new JSONObject();
+    public static JSONObject last_seen = new JSONObject();
     public static String dynamic_location = "";
-    public static boolean chatboxactive = false;
+    //public static boolean chatboxactive = false;
 
     public static String current_post = "";
     public static String userid = "";
@@ -51,6 +52,7 @@ public class User {
     public static JSONObject twoosh_user_prefs = null;
     public static String otp_verified = "0";
     public static boolean user_recognized = false;
+
 
 
 

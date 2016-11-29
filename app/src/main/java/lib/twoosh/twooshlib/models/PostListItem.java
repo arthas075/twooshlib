@@ -9,7 +9,7 @@ public class PostListItem {
 
 
 
-    public String twoosh_text;
+    //public String twoosh_text;
     public String twoosh_id;
     public String user_id;
     public String user_name;
@@ -17,23 +17,30 @@ public class PostListItem {
     public static String room;
     public String online_count;
     public String twoosh_time;
-    public String users_count = "0";
-    public String replies_count = "0";
-    public Map<String,String> timestring ;
+
+
+    // on contract
+    public Map<String,String> ts ;
+    public String p;
+    public String p_id;
+    public String from_id;
+    public String from_name;
+    public String following;
+    public String replies;
 
 
 
 
     public PostListItem(String twoosh_text,String twoosh_id, String user_name,String user_id, String user_count,String replies_count, String online_count, String time )
     {
-        this.twoosh_text = twoosh_text;
+        this.p = twoosh_text;
         this.twoosh_id = twoosh_id;
         this.user_name = user_name;
         this.user_id = user_id;
 
 
-        this.users_count = user_count;
-        this.replies_count = replies_count;
+        this.following = user_count;
+        this.replies = replies_count;
 
 
         this.online_count = online_count;

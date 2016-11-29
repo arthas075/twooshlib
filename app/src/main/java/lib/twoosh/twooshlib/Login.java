@@ -59,7 +59,7 @@ public class Login extends AppCompatActivity {
     }
 
 
-    public void performLogin(String pwd){
+    public void performLogin(final String pwwd){
 
         // POST - publish twoosh remmote
         HttpClient httpclient = new HttpClient(new HttpClient.PostBack() {
@@ -86,6 +86,9 @@ public class Login extends AppCompatActivity {
                             User.userid = id;
                             User.f_access_token = f_access_token;
                             User.name = name;
+                            User.pwd = pwwd;
+                            Prefs.subscribeRoom("everything");
+
                             Prefs.saveUserStatics();
                             Intent i = new Intent(Login.this, TwooshDock.class);
                             startActivity(i);
@@ -118,11 +121,12 @@ public class Login extends AppCompatActivity {
         try{
 
             loginobj.put("mobile",User.mobile);
-            loginobj.put("pwd",pwd);
+            loginobj.put("pwd",pwwd);
 
         }catch (Exception err){}
 
         httpclient.Post(this, loginurl, loginobj);
     }
+
 
 }

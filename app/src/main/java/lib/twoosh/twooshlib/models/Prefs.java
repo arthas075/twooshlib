@@ -60,6 +60,7 @@ public class Prefs {
             User.appname = "Twoosh";
             User.subscribed_rooms = user_data.getJSONObject("subscribed_rooms");
             User.subscribed_posts = user_data.getJSONObject("subscribed_posts");
+            User.last_seen = user_data.getJSONObject("last_seen");
 
 
         } catch (JSONException e) {
@@ -83,6 +84,7 @@ public class Prefs {
             userdetails.put("appname", User.appname);
             userdetails.put("subscribed_rooms", User.subscribed_rooms);
             userdetails.put("subscribed_posts", User.subscribed_posts);
+            userdetails.put("last_seen", User.last_seen);
 
             SharedPreferences.Editor editor = prefs.edit();
             editor.putString("twoosher", userdetails.toString());
