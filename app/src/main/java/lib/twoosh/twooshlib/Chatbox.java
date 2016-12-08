@@ -118,8 +118,9 @@ public class Chatbox extends AppCompatActivity {
 
     public void setFirebaseForChat(){
 
-        postchatref = new Firebase("https://twooshapp-763a4.firebaseio.com");
-        postchatref = postchatref.child("chats").child(this.twoosh_id);
+        //postchatref =  .child("posts").child(User.current_room);
+        //postchatref = new Firebase("https://twooshapp-763a4.firebaseio.com");
+        postchatref = Fref.fref_base.child("chats").child(this.twoosh_id);
 //
         postchatref.keepSynced(true);
 //

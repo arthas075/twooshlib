@@ -59,7 +59,7 @@
             android:textColor="@color/twooshblue"
             android:layout_marginTop="20dp"
             android:layout_marginLeft="7dp"
-            android:text="Password"/>
+            android:text="Choose a Password"/>
 
         <EditText
             android:layout_width="match_parent"

@@ -39,8 +39,8 @@ public class PostListItemTs {
     {
         this.p = twoosh_text;
         this.twoosh_id = twoosh_id;
-        this.user_name = user_name;
-        this.user_id = user_name;
+        this.from_name = user_name;
+        this.from_id = user_name;
 
 
         this.following = user_count;

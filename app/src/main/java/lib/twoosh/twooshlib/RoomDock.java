@@ -57,26 +57,30 @@ import lib.twoosh.twooshlib.notifs.Notifs;
 import lib.twoosh.twooshlib.notifs.Toasts;
 import lib.twoosh.twooshlib.services.FService;
 
+
+
+// display list of posts and create post icon
 public class RoomDock extends AppCompatActivity implements Callbacker{
 
-    private ViewPager rdPager;
-    private PagerAdapter rdPagerAdapter;
+
+
+    // class members
     PostListAdapter adapter ;
-    private static final int NUM_PAGES = 1;
-    int postcount = 0;
-
-
     Firebase fref = null;
     Firebase.AuthResultHandler authResultHandler = null;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_room_dock);
 
 
         initActivity();
-        setAdapters();
+
 
 
 
@@ -86,25 +90,52 @@ public class RoomDock extends AppCompatActivity implements Callbacker{
 
     public void initActivity(){
 
-        //getApplicationContext().getSharedPreferences("info.twoosh.TwooshUserPref", 0).edit().clear().commit();
-        Intent i = getIntent();
-        String room = i.getStringExtra("room");
-        Long time = i.getLongExtra("time",0);
-        String notifed = i.getStringExtra("notifed");
-        if(notifed!=null && notifed.equals("1")){
-            markLastSeen();
-        }
-        User.current_room = room;
-        FService.roomdockactive = true;
+
         // touch User
         touchUser();
 
 
-        this.getSupportActionBar().setTitle("#everything");
+        //getApplicationContext().getSharedPreferences("info.twoosh.TwooshUserPref", 0).edit().clear().commit();
+//        Intent i = getIntent();
+//        String room = i.getStringExtra("room");
+//        Long time = i.getLongExtra("time",0);
+//        String notifed = i.getStringExtra("notifed");
+//        if(notifed!=null && notifed.equals("1")){
+//            markLastSeen();
+//        }
+//        User.current_room = room;
+//        FService.roomdockactive = true;
+
+
+
+        //this.getSupportActionBar().setTitle("#everything");
 //        this.getSupportActionBar().setSubtitle("Twoosh - You are connected.");
-        invalidateOptionsMenu();
+        //invalidateOptionsMenu();
     }
 
+
+    public void touchUser(){
+
+
+        Prefs prefs = new Prefs(getApplicationContext());
+        if(!prefs.prefExists()){
+
+            showLoginScreen();
+
+        }else{
+
+            // start service n wait for authentication
+            FService.caller = this;
+            if(!FService.isRunning){
+                Intent fservice = new Intent(getApplicationContext(), FService.class);
+                fservice.putExtra("payload","1");
+                startService(fservice);
+            }
+            initApp();
+            setRoomListener();
+
+        }
+    }
     public void markLastSeen(){
 
         JSONObject jObj = new JSONObject();
@@ -118,25 +149,9 @@ public class RoomDock extends AppCompatActivity implements Callbacker{
 
         }
     }
-    public void touchUser(){
-
-        Prefs prefs = new Prefs(getApplicationContext());
-        if(prefs.prefExists()){
-
-            FService.caller = this;
-            if(!FService.isRunning){
-                Intent fservice = new Intent(getApplicationContext(), FService.class);
-                fservice.putExtra("payload","1");
-                startService(fservice);
-            }
-            initApp();
 
 
 
-        }else{
-            showLoginScreen();
-        }
-    }
 
     public void showLoginScreen(){
 
@@ -163,18 +178,26 @@ public class RoomDock extends AppCompatActivity implements Callbacker{
 
         System.out.println("Firebase auth success callback");
         setAdapters();
-        setRoomListener();
+
 
     }
     @Override
     public void callback(String data){
 
 
+
     }
 
     public void setRoomListener(){
 
-
+        User.current_room = "everything";
+        Firebase.setAndroidContext(getApplicationContext());
+        try {
+            Firebase.getDefaultConfig().setPersistenceEnabled(true);
+        }catch (Exception e){}
+        if(Fref.fref_base==null){
+            Fref.fref_base = new Firebase("https://twooshapp-763a4.firebaseio.com");
+        }
         this.fref = Fref.fref_base.child("posts").child(User.current_room);
         this.fref.keepSynced(true);
         Query orderedposts = this.fref.orderByChild("timestring");
@@ -184,12 +207,13 @@ public class RoomDock extends AppCompatActivity implements Callbacker{
 
                 PostListItemTs plo = null;
                 plo = snapshot.getValue(PostListItemTs.class);
+                String postkey = snapshot.getKey();
 //                System.out.println("The " + snapshot.getKey() + " dinosaur's score is " + snapshot.getValue());
 //                for (DataSnapshot messageSnapshot: snapshot.getChildren()) {
 //                    plo = messageSnapshot.getValue(PostListItemTs.class);
 //                }
                 String ts = Long.toString(plo.ts/1000);
-                PostListItem pl = new PostListItem(plo.p,plo.twoosh_id,plo.user_name,plo.user_id,plo.following,plo.replies,plo.online_count,"1");
+                PostListItem pl = new PostListItem(plo.p,postkey,plo.from_name,plo.from_id,plo.following,plo.replies,plo.online_count,ts);
 //                Object e = snapshot.getValue();
 //                HashMap<String, String> map = (HashMap<String, String>) e;
 //
@@ -247,8 +271,80 @@ public class RoomDock extends AppCompatActivity implements Callbacker{
         });
 
 
+        // authenticate firebase for writes
+        Fref.fref_base.authWithCustomToken(User.f_access_token, this.authResultHandler);this.authResultHandler = new Firebase.AuthResultHandler() {
+            @Override
+            public void onAuthenticated(AuthData authData) {
+                // Authenticated successfully with payload authData
+
+
+
+                System.out.println("The read failed: ");
+                //showToastMsg("User authenticated success...");
+
+            }
+
+            @Override
+            public void onAuthenticationError(FirebaseError firebaseError) {
+                // Authenticated failed with error firebaseError
+               // showToastMsg("User authenticated failed...");
+                //showToastMsg("FAccessToken - "+User.f_access_token);
+                getFirebaseAuth();
+            }
+        };
+
     }
 
+    public void getFirebaseAuth(){
+        HttpClient httpClient = new HttpClient(new HttpClient.PostBack(){
+
+            @Override
+            public void onResponse(String response) {
+
+                try {
+
+                    //Toast.makeText(TwooshDock.this, response, Toast.LENGTH_SHORT).show();
+                    JSONObject roomlist_response = new JSONObject(response);
+                    if(roomlist_response.getString("status").equals("Success") && (roomlist_response.getString("response").length()>0)){
+                        User.f_access_token = roomlist_response.getString("response");
+                        //  fref.authWithCustomToken(User.f_access_token, authResultHandler);
+
+                        Prefs.saveUserStatics();
+                        Fref.fref_base.authWithCustomToken(User.f_access_token, authResultHandler);
+                        // dock.putExtra("work","getaccess");
+//                        Intent dock = new Intent(VerifyOTP.this, RoomDock.class);
+//                        startActivity(dock);
+
+                    }
+
+
+                } catch (JSONException e) {
+                    //Toast.makeText(TwooshDock.this, e.toString(), Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
+            }
+        });
+
+
+        String host = getResources().getString(R.string.local_host);
+        String getfaccessapi = getResources().getString(R.string.getfaccessapi);
+
+        //String host = getResources().getString(R.string.local_host);
+        //String getroomsapi = getResources().getString(R.string.getfaccessapi);
+        String getfaccessurl = host+getfaccessapi;
+        JSONObject getfaccess = new JSONObject();
+        try{
+
+            getfaccess.put("mobile",User.mobile);
+            getfaccess.put("pwd",User.pwd);
+        }
+        catch (Exception e){}
+
+        httpClient.Post(getApplicationContext(), getfaccessurl, getfaccess);
+
+
+
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

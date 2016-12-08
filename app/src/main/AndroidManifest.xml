@@ -18,21 +18,25 @@
         android:label="Twoosh"
         android:supportsRtl="true"
         android:theme="@style/AppTheme" >
+
+
         <activity
             android:name=".TwooshDock"
             android:label="@string/title_activity_twoosh_dock" >
+        </activity>
+
+
+        <activity
+            android:name=".RoomDock"
+            android:label="@string/title_activity_room_dock" >
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
-
-
         </activity>
-        <activity
-            android:name=".RoomDock"
-            android:label="@string/title_activity_room_dock" />
         <activity
             android:name=".CreatePost"
             android:label="@string/title_activity_create_post"
@@ -56,7 +60,13 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Signup"
-            android:label="@string/title_activity_signup" />
+            android:label="@string/title_activity_signup" >
+
+
+
+
+
+        </activity>
         <activity
             android:name=".VerifyOTP"
             android:label="@string/title_activity_verify_otp"
@@ -90,6 +100,8 @@
         <activity android:name=".Index"
             android:label="Twoosh - You are connected."
             android:theme="@style/AppTheme.NoActionBar">
+
+
 
 
         </activity>
