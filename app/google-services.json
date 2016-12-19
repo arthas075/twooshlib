@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "276193087316",
+    "firebase_url": "https://twooshapp-763a4.firebaseio.com",
+    "project_id": "twooshapp-763a4",
+    "storage_bucket": "twooshapp-763a4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:276193087316:android:4f366909c59f02ca",
+        "android_client_info": {
+          "package_name": "lib.twoosh.twooshlib"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "276193087316-jn4rc5i28rimr0m76iojbcguern66gvm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "lib.twoosh.twooshlib",
+            "certificate_hash": "6E08F8BD0D4DD4E2AB1AF30017823AF7370F5814"
+          }
+        },
+        {
+          "client_id": "276193087316-57ridt3kagaviq63469ipr5fn5pvddkv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDdOWKWMqJ2ao142ieOty9TW18ZZfyZn6M"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "276193087316-57ridt3kagaviq63469ipr5fn5pvddkv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
